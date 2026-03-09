@@ -10,47 +10,98 @@ import {
 } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
 
-const teamworkers = [
-  {
-    id: 1,
-    name: "IRADUKUNDA Stiven",
-    position: "Chief Executive Officer",
-    image: "/images/worker1.jpg?height=400&width=300",
-  },
-  {
-    id: 2,
-    name: "GUSENGA Benjamin",
-    position: "Project Manager",
-    image: "/images/worker2.jpg?height=400&width=300",
-  },
-  {
-    id: 3,
-    name: "AKIMANIMPAYE Rachel",
-    position: "Secretary",
-    image: "/images/worker3.jpg?height=400&width=300",
-  },
-  {
-    id: 4,
-    name: "MASENGESHO Bertin",
-    position: "Accountant",
-    image: "/images/worker4.jpg?height=400&width=300",
-  },
-  {
-    id: 5,
-    name: "NIRAGIRE Magnifique",
-    position: "IT Specialist",
-    image: "/images/worker5.jpg?height=400&width=300",
-  },
-  {
-    id: 6,
-    name: "Sostene BANANAYO",
-    position: "Developer",
-    image: "/images/profile.jpg?height=400&width=300",
-  },
- 
-];
+interface TeamMember {
+  id: string;
+  name: string;
+  position: string;
+  image: string;
+  order: number;
+  createdAt: string;
+  updatedAt: string;
+}
 
-export default function AboutSection() {
+export default function AboutUsSection() {
+  const [teamworkers, setTeamworkers] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchTeamMembers();
+  }, []);
+
+  const fetchTeamMembers = async () => {
+    try {
+      const response = await fetch('/api/team');
+      const data = await response.json();
+      
+      if (data.success) {
+        setTeamworkers(data.data || []);
+      } else {
+        console.error('Failed to fetch team members:', data.message);
+        // Fallback to hardcoded data if API fails
+        setTeamworkers([
+          {
+            id: "1",
+            name: "IRADUKUNDA Stiven",
+            position: "Chief Executive Officer",
+            image: "/images/worker1.jpg?height=400&width=300",
+            order: 0,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: "2",
+            name: "GUSENGA Benjamin",
+            position: "Project Manager",
+            image: "/images/worker2.jpg?height=400&width=300",
+            order: 1,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: "3",
+            name: "AKIMANIMPAYE Rachel",
+            position: "Secretary",
+            image: "/images/worker3.jpg?height=400&width=300",
+            order: 2,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: "4",
+            name: "MASENGESHO Bertin",
+            position: "Accountant",
+            image: "/images/worker4.jpg?height=400&width=300",
+            order: 3,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: "5",
+            name: "NIRAGIRE Magnifique",
+            position: "IT Specialist",
+            image: "/images/worker5.jpg?height=400&width=300",
+            order: 4,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+          {
+            id: "6",
+            name: "Sostene BANANAYO",
+            position: "Developer",
+            image: "/images/profile.jpg?height=400&width=300",
+            order: 5,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        ]);
+      }
+    } catch (error) {
+      console.error('Error fetching team members:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const [isVisible, setIsVisible] = useState(false);
   const [animationKey, setAnimationKey] = useState(0);
   const sectionRef = useRef(null);
@@ -88,6 +139,24 @@ export default function AboutSection() {
       }
     };
   }, []);
+
+  if (loading) {
+    return (
+      <section
+        ref={sectionRef}
+        id="about"
+        className="py-16 md:py-24 bg-gradient-to-b from-gray-50 to-white"
+      >
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+              Loading Team...
+            </h2>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section

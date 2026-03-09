@@ -1,8 +1,18 @@
-import { requireAdminAuth } from "@/app/actions/auth"; // Import the auth function
+"use client";
+
+import { useState, useEffect } from "react";
+import { requireAdminAuth } from "@/app/actions/auth";
 import LogoutButton from "./_components/logout-button";
-import RegistrationsTable from "./_components/registrations-table";
-import CreateUserForm from "./_components/create-user-form";
+import AdminStats from "./_components/admin-stats";
+import TeamManagement from "./_components/team-management";
+import RecordsTable from "./_components/records-table";
 import { getRegistrations } from "../actions/register";
+import { getAllProductsForAdmin, getAdminStats, deleteProductByAdmin } from "../actions/admin";
+import { getAllTeamMembers } from "../actions/team";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent } from "@/components/ui/card";
+import { BarChart3, Users2, FileText } from "lucide-react";
 
 const allServices = [
   "Management Consultancy",
@@ -16,23 +26,84 @@ const allServices = [
   "Wholesale Trade",
   "Airtime Service Retail",
   "Cargo Handling",
-  "Technical Testing & Analysis",
 ];
 
-export default async function DashboardPage() {
-  await requireAdminAuth();
+export default function DashboardPage() {
+  const [registrations, setRegistrations] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [stats, setStats] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [activeTab, setActiveTab] = useState("overview");
 
-  const { data: registrations, success, message } = await getRegistrations();
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  if (!success) {
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      const [registrationsRes, productsRes, statsRes, teamRes] = await Promise.all([
+        getRegistrations(),
+        getAllProductsForAdmin(),
+        getAdminStats(),
+        getAllTeamMembers(),
+      ]);
+
+      if (registrationsRes.success) {
+        setRegistrations(registrationsRes.data || []);
+      }
+
+      if (productsRes.success) {
+        setProducts(productsRes.data || []);
+      }
+
+      if (statsRes.success) {
+        setStats(statsRes.data);
+      }
+
+      if (teamRes.success) {
+        setTeamMembers(teamRes.data || []);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      // Set empty arrays to prevent undefined errors
+      setRegistrations([]);
+      setProducts([]);
+      setTeamMembers([]);
+      setStats(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteProduct = async (productId: string) => {
+    setIsDeleting(true);
+    try {
+      const result = await deleteProductByAdmin(productId);
+      if (result.success) {
+        // Refresh data
+        await fetchData();
+        alert(result.message);
+      } else {
+        alert(result.message || "Failed to delete product");
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      alert("An error occurred while deleting the product");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  if (loading) {
     return (
       <main className="min-h-screen flex flex-col">
         <div className="flex-grow container mx-auto px-4 py-12 mt-24">
-          <h1 className="text-3xl font-bold text-gray-800 mb-8">
-            Registrations Dashboard
-          </h1>
-          <div className="text-red-500">
-            {message || "An error occurred while loading registrations."}
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading dashboard...</p>
           </div>
         </div>
       </main>
@@ -43,17 +114,50 @@ export default async function DashboardPage() {
     <main className="min-h-screen flex flex-col">
       <div className="flex-grow container mx-auto px-4 py-12 mt-24">
         <div className="flex justify-between items-center mb-8">
-          {" "}
           <h1 className="text-3xl font-bold text-gray-800">
-            Dashboard
+            Admin Dashboard
           </h1>
           <LogoutButton />
         </div>
-        <p>Regstration Table</p>
-        <RegistrationsTable
-          initialRegistrations={registrations || []}
-          allServices={allServices}
-        />
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+          <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview" className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4" />
+            Overview
+          </TabsTrigger>
+          <TabsTrigger value="records" className="flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            All Records
+          </TabsTrigger>
+          <TabsTrigger value="team" className="flex items-center gap-2">
+            <Users2 className="w-4 h-4" />
+            Team
+          </TabsTrigger>
+        </TabsList>
+
+          <TabsContent value="overview" className="space-y-6">
+            {stats && (
+              <AdminStats
+                totalUsers={stats.totalUsers}
+                totalProducts={stats.totalProducts}
+                recentUsers={stats.recentUsers}
+                recentProducts={stats.recentProducts}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="records" className="space-y-6">
+            <RecordsTable />
+          </TabsContent>
+
+          <TabsContent value="team" className="space-y-6">
+            <TeamManagement 
+              initialTeamMembers={teamMembers}
+              onUpdate={fetchData}
+            />
+          </TabsContent>
+        </Tabs>
       </div>
     </main>
   );

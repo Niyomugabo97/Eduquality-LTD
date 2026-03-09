@@ -27,6 +27,7 @@ export default function Header() {
   const navigation = [
     { name: "Home", href: "/" },
     { name: "Services", href: "/services" },
+    { name: "View Products", href: "/view-products" },
     { name: "About us", href: "/#about" },
     { name: "Contact", href: "/contact" },
   ];
@@ -127,7 +128,7 @@ export default function Header() {
                   ) : (
                     <Link href={"/login"}>
                       <Button className="hidden lg:block bg-transparent border-gray-400 rounded-[20px] text-white text-sm py-1 px-4 bg-[#F17105] hover:bg-[#F17105]/50 hover:scale-105 transition-all duration-100 h-auto min-h-0">
-                        Login
+                        Login/Signup
                       </Button>
                     </Link>
                   )}

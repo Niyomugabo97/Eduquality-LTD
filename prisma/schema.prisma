@@ -41,6 +41,46 @@ model Admin {
   updatedAt DateTime @updatedAt
 }
 
+model User {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  email     String   @unique
+  phone      String?  // Optional phone number for WhatsApp contact
+  password  String
+  products  Product[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String   @db.ObjectId
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title         String
+  description    String
+  price         Float?   // Optional price field
+  latitude      Float?   // Optional latitude for location
+  longitude     Float?   // Optional longitude for location
+  available     Boolean  @default(true) // Product availability status
+  hidden        Boolean  @default(false) // Admin can hide products from public view
+  contactNumber String?  // Optional contact number for this product
+  whatsappNumber String?  // Optional WhatsApp number for this product
+  media         ProductMedia[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model ProductMedia {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId    String   @db.ObjectId
+  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  images       String[] // Array of Cloudinary URLs
+  videos       String[] // Array of Cloudinary URLs
+  mainImage    String? // Primary image URL
+  mainVideo    String? // Primary video URL
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
 
 model Contact {
   id        String       @id @default(auto()) @map("_id") @db.ObjectId
@@ -51,5 +91,15 @@ model Contact {
   status    ContactStatus @default(New)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
+}
+
+model Team {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  position  String
+  image     String   // base64 encoded image
+  order     Int      @default(0) // for ordering team members
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 

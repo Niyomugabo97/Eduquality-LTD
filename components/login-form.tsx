@@ -5,27 +5,30 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, CheckCircle, AlertCircle } from "lucide-react";
-import { login } from "@/app/actions/auth";
+import { login, loginUser } from "@/app/actions/auth";
 
-export default function LoginForm() {
-  const initialState = {
-    success: false,
-    message: "",
-  };
-  const [state, formAction, isPending] = useActionState(login, initialState);
+interface LoginFormProps {
+  isAdmin?: boolean; // if true, use admin login; otherwise user login
+}
+
+export default function LoginForm({ isAdmin = false }: LoginFormProps) {
+  const initialState = { success: false, message: "" };
+
+  // Choose the correct action
+  const action = isAdmin ? login : loginUser;
+
+  const [state, formAction, isPending] = useActionState(action, initialState);
   const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (state.success) {
-      formRef.current?.reset();
-    }
+    if (state.success) formRef.current?.reset();
   }, [state.success]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md border border-gray-200">
         <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-          Admin Login
+          {isAdmin ? "Admin Login" : "Login"}
         </h1>
         <form ref={formRef} action={formAction} className="space-y-5">
           <div>
@@ -34,7 +37,7 @@ export default function LoginForm() {
               id="email"
               name="email"
               type="email"
-              placeholder="admin@vertexconsulting.com"
+              placeholder={isAdmin ? "admin@vertexconsulting.com" : "Enter your email"}
               required
               disabled={isPending}
               className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-100"
@@ -61,11 +64,7 @@ export default function LoginForm() {
                   : "bg-red-50 text-red-700 border border-red-200"
               }`}
             >
-              {state.success ? (
-                <CheckCircle className="w-4 h-4" />
-              ) : (
-                <AlertCircle className="w-4 h-4" />
-              )}
+              {state.success ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
               <span>{state.message}</span>
             </div>
           )}
@@ -84,6 +83,22 @@ export default function LoginForm() {
               "Login"
             )}
           </Button>
+
+          {!isAdmin && (
+            <div className="mt-4 space-y-2">
+              <p className="text-center text-sm text-gray-500">
+                <a href="/forgot-password" className="text-[#F17105] font-semibold hover:underline">
+                  Forgot Password?
+                </a>
+              </p>
+              <p className="text-center text-sm text-gray-500">
+                Don't have an account?{" "}
+                <a href="/signup" className="text-[#F17105] font-semibold hover:underline">
+                  Sign Up
+                </a>
+              </p>
+            </div>
+          )}
         </form>
       </div>
     </div>
