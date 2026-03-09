@@ -32,7 +32,7 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [distance, setDistance] = useState<number | null>(null);
+  const [distance, setDistance] = useState<number | undefined>(undefined);
 
   // Haversine distance formula
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
