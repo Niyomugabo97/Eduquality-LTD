@@ -394,7 +394,7 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
             <Checkbox
               id="available"
               checked={isAvailable}
-              onCheckedChange={setIsAvailable}
+              onCheckedChange={(checked: boolean) => setIsAvailable(checked)}
               disabled={isSubmitting}
             />
             <Label htmlFor="available" className="text-sm font-normal">
@@ -405,7 +405,7 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
             <Checkbox
               id="unavailable"
               checked={!isAvailable}
-              onCheckedChange={(checked) => setIsAvailable(!checked)}
+              onCheckedChange={(checked: boolean) => setIsAvailable(!checked)}
               disabled={isSubmitting}
             />
             <Label htmlFor="unavailable" className="text-sm font-normal">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ interface Product {
   };
 }
 
-export default function EditProductPage() {
+function EditProductContent() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -245,7 +245,7 @@ export default function EditProductPage() {
                     <Checkbox
                       id="available"
                       checked={isAvailable}
-                      onCheckedChange={setIsAvailable}
+                      onCheckedChange={(checked: boolean) => setIsAvailable(checked)}
                       disabled={isSubmitting}
                     />
                     <Label htmlFor="available" className="text-sm font-normal">
@@ -256,7 +256,7 @@ export default function EditProductPage() {
                     <Checkbox
                       id="unavailable"
                       checked={!isAvailable}
-                      onCheckedChange={(checked) => setIsAvailable(!checked)}
+                      onCheckedChange={(checked: boolean) => setIsAvailable(!checked)}
                       disabled={isSubmitting}
                     />
                     <Label htmlFor="unavailable" className="text-sm font-normal">
@@ -299,5 +299,13 @@ export default function EditProductPage() {
         </Card>
       </div>
     </div>
+  );
+}
+
+export default function EditProductPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <EditProductContent />
+    </Suspense>
   );
 }

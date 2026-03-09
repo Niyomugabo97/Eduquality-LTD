@@ -192,7 +192,7 @@ export default function ProductUploadForm() {
               <Checkbox
                 id="available"
                 checked={isAvailable}
-                onCheckedChange={setIsAvailable}
+                onCheckedChange={(checked: boolean) => setIsAvailable(checked)}
                 disabled={isPending}
               />
               <Label htmlFor="available" className="text-sm font-normal">
@@ -203,7 +203,7 @@ export default function ProductUploadForm() {
               <Checkbox
                 id="unavailable"
                 checked={!isAvailable}
-                onCheckedChange={(checked) => setIsAvailable(!checked)}
+                onCheckedChange={(checked: boolean) => setIsAvailable(!checked)}
                 disabled={isPending}
               />
               <Label htmlFor="unavailable" className="text-sm font-normal">

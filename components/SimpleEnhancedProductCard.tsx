@@ -13,9 +13,9 @@ interface Product {
   id: string;
   title: string;
   description: string;
-  price?: number; // undefined if not set
-  latitude?: number;
-  longitude?: number;
+  price: number | null | undefined;
+  latitude?: number | null;
+  longitude?: number | null;
   createdAt: string | Date;
   distance?: number;
   user: {
@@ -26,9 +26,9 @@ interface Product {
   media?: {
     images: string[];
     videos: string[];
-    mainImage?: string;
-    mainVideo?: string;
-  };
+    mainImage?: string | null | undefined;
+    mainVideo?: string | null | undefined;
+  } | null | undefined;
   // Legacy fields for backward compatibility
   image?: string;
   images?: string[];
@@ -86,7 +86,7 @@ export default function SimpleEnhancedProductCard({ product, currentUser, isAdmi
     }
   }, []);
 
-  const formatPrice = (price?: number) => {
+  const formatPrice = (price?: number | null) => {
     if (price == null) return "Price not set";
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
   };

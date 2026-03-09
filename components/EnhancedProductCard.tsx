@@ -170,16 +170,14 @@ export default function EnhancedProductCard({ product, currentUser, isAdmin = fa
             <div className="mb-4">
               <div className="h-32 w-full rounded-lg overflow-hidden border border-gray-200">
                 <MapContainer
-                  center={[product.latitude, product.longitude]}
-                  zoom={13}
+                  bounds={[
+                    [product.latitude! - 0.001, product.longitude! - 0.001],
+                    [product.latitude! + 0.001, product.longitude! + 0.001]
+                  ] as [[number, number], [number, number]]}
                   style={{ height: '100%', width: '100%' }}
-                  zoomControl={false}
-                  attributionControl={false}
-                  scrollWheelZoom={false}
                 >
                   <TileLayer
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                   />
                   <Marker position={[product.latitude, product.longitude]}>
                     <Popup>

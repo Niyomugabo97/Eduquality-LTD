@@ -105,7 +105,7 @@ export default function EnhancedProductUploadForm({ onSuccess }: EnhancedProduct
     }
   };
 
-  const isPending = state && typeof state === 'object' && 'pending' in state ? state.pending : false;
+  const isPending = state && typeof state === 'object' && 'pending' in state ? (state as any).pending : false;
 
   return (
     <div className="space-y-6">

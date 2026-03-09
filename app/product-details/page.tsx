@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -78,7 +78,7 @@ const getMediaType = (product: Product | null, index: number): 'image' | 'video'
   return 'image';
 };
 
-export default function ProductDetailPage() {
+function ProductDetailContent() {
   const searchParams = useSearchParams();
   const productId = searchParams.get("id");
   
@@ -602,5 +602,13 @@ export default function ProductDetailPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ProductDetailPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductDetailContent />
+    </Suspense>
   );
 }
