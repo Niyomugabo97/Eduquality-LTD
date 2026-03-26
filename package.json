@@ -2,9 +2,13 @@
   "name": "my-v0-project",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "next dev",
-    "dev-stable": "set NODE_OPTIONS=--max-old-space-size=4096 && next dev",
+    "dev-stable": "NODE_OPTIONS=--max-old-space-size=4096 next dev",
     "build": "next build",
     "postinstall": "prisma generate",
     "start": "next start",
