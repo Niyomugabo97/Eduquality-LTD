@@ -77,7 +77,7 @@ export default function SimpleEnhancedProductCard({ product, currentUser, isAdmi
   };
 
   useEffect(() => {
-    if (navigator.geolocation) {
+    if (typeof window !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           setUserLocation({
@@ -85,8 +85,13 @@ export default function SimpleEnhancedProductCard({ product, currentUser, isAdmi
             lng: position.coords.longitude,
           });
         },
-        (error) => console.error("Error getting location:", error)
+        (error) => {
+          console.log("Geolocation error:", error.code, error.message);
+          // Silently handle geolocation errors - don't crash the component
+        }
       );
+    } else {
+      console.log("Geolocation not available in this browser/environment");
     }
   }, []);
 
