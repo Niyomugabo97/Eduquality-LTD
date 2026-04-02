@@ -130,18 +130,7 @@ export default function CategorizedProducts() {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {getFeaturedProducts().map((product) => (
-            <div key={product.id} className="relative">
-              <ProductCard key={product.id} product={product} featured />
-              <div className="absolute top-2 right-2 z-10">
-                <Link 
-                  href={`/product-details?id=${product.id}`}
-                  className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg font-medium hover:scale-105 transition-all duration-300 shadow-sm hover:shadow-md"
-                >
-                  <MessageCircle className="w-4 h-4 mr-2" />
-                  View Details
-                </Link>
-              </div>
-            </div>
+            <ProductCard key={product.id} product={product} featured />
           ))}
         </div>
       </div>
