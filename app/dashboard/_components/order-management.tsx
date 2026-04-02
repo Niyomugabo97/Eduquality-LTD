@@ -230,68 +230,68 @@ export default function OrderManagement({ onUpdate }: OrderManagementProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{stats.total}</div>
-            <div className="text-sm text-gray-600">Total Orders</div>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
+        <Card className="hover:shadow-md transition-shadow">
+          <CardContent className="p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">{stats.total}</div>
+            <div className="text-xs sm:text-sm text-gray-600">Total Orders</div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-            <div className="text-sm text-gray-600">Pending</div>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardContent className="p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-yellow-600">{stats.pending}</div>
+            <div className="text-xs sm:text-sm text-gray-600">Pending</div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">{stats.inProgress}</div>
-            <div className="text-sm text-gray-600">In Progress</div>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardContent className="p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-purple-600">{stats.inProgress}</div>
+            <div className="text-xs sm:text-sm text-gray-600">In Progress</div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{stats.delivered}</div>
-            <div className="text-sm text-gray-600">Delivered</div>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardContent className="p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-green-600">{stats.delivered}</div>
+            <div className="text-xs sm:text-sm text-gray-600">Delivered</div>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{stats.cancelled}</div>
-            <div className="text-sm text-gray-600">Cancelled</div>
+        <Card className="hover:shadow-md transition-shadow">
+          <CardContent className="p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-red-600">{stats.cancelled}</div>
+            <div className="text-xs sm:text-sm text-gray-600">Cancelled</div>
           </CardContent>
         </Card>
       </div>
 
       {/* Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center">
-            <Filter className="w-5 h-5 mr-2" />
+      <Card className="rounded-xl sm:rounded-2xl shadow-lg">
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="flex items-center text-lg sm:text-xl">
+            <Filter className="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" />
             Order Management
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid md:grid-cols-4 gap-4 mb-4">
+        <CardContent className="p-4 sm:p-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-4">
             <div>
-              <Label htmlFor="search">Search</Label>
+              <Label htmlFor="search" className="text-sm font-medium">Search</Label>
               <div className="relative">
-                <Search className="absolute left-3 top-3 w-4 h-4 text-gray-400" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <Input
                   id="search"
                   placeholder="Search orders..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
+                  className="pl-10 h-10"
                 />
               </div>
             </div>
             <div>
-              <Label htmlFor="status">Status</Label>
+              <Label htmlFor="status" className="text-sm font-medium">Status</Label>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger>
+                <SelectTrigger className="h-10">
                   <SelectValue placeholder="Filter by status" />
                 </SelectTrigger>
                 <SelectContent>

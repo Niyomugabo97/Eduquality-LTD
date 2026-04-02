@@ -154,38 +154,38 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-5 sm:space-y-6">
       {/* Title */}
-      <div>
-        <Label htmlFor="title">Product Title</Label>
+      <div className="space-y-2">
+        <Label htmlFor="title" className="text-sm font-medium text-gray-700">Product Title</Label>
         <Input
           id="title"
           name="title"
           type="text"
           placeholder="Enter product title"
           required
-          className="w-full"
+          className="w-full h-10"
         />
       </div>
 
       {/* Description */}
-      <div>
-        <Label htmlFor="description">Description</Label>
+      <div className="space-y-2">
+        <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
         <Textarea
           id="description"
           name="description"
           placeholder="Describe your product..."
           required
           rows={4}
-          className="w-full resize-none"
+          className="w-full resize-none min-h-[100px]"
         />
       </div>
 
       {/* Category */}
-      <div>
-        <Label htmlFor="category">Product Category</Label>
+      <div className="space-y-2">
+        <Label htmlFor="category" className="text-sm font-medium text-gray-700">Product Category</Label>
         <Select value={category} onValueChange={setCategory} name="category">
-          <SelectTrigger className="w-full">
+          <SelectTrigger className="w-full h-10">
             <SelectValue placeholder="Select a category" />
           </SelectTrigger>
           <SelectContent>
@@ -222,8 +222,8 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
       </div>
 
       {/* Price */}
-      <div>
-        <Label htmlFor="price">Price (Optional)</Label>
+      <div className="space-y-2">
+        <Label htmlFor="price" className="text-sm font-medium text-gray-700">Price (Optional)</Label>
         <Input
           id="price"
           name="price"
@@ -231,15 +231,15 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
           step="0.01"
           min="0"
           placeholder="Enter product price"
-          className="w-full"
+          className="w-full h-10"
         />
       </div>
 
       {/* Images Upload - Single Image Only */}
-      <div>
-        <Label>Product Image (Required)</Label>
-        <div className="space-y-4">
-          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 bg-gradient-to-br from-blue-50 to-indigo-50">
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-gray-700">Product Image (Required)</Label>
+        <div className="space-y-3">
+          <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 bg-gradient-to-br from-blue-50 to-indigo-50">
             <input
               ref={fileInputRef}
               type="file"
@@ -283,29 +283,32 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
       </div>
 
       {/* Location */}
-      <div>
-        <Label>Product Location (Optional), 📍Click On "Use My Location" Button below to locate your product on Google Maps.</Label>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="latitude">🗺️</Label>
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-gray-700">
+          Product Location (Optional)
+        </Label>
+        <p className="text-xs text-gray-600">📍Click On "Use My Location" Button below to locate your product on Google Maps.</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Label htmlFor="latitude" className="text-xs font-medium text-gray-600">🗺️ Latitude</Label>
             <Input
               id="latitude"
               name="latitude"
               type="number"
               step="any"
               placeholder="e.g., 40.7128"
-              className="w-full"
+              className="w-full h-9"
             />
           </div>
-          <div>
-            <Label htmlFor="longitude">🗺️</Label>
+          <div className="space-y-1">
+            <Label htmlFor="longitude" className="text-xs font-medium text-gray-600">🗺️ Longitude</Label>
             <Input
               id="longitude"
               name="longitude"
               type="number"
               step="any"
               placeholder="e.g., -74.0060"
-              className="w-full"
+              className="w-full h-9"
             />
           </div>
         </div>
@@ -313,74 +316,72 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
           type="button"
           variant="outline"
           onClick={handleLocationClick}
-          className="w-full mt-2"
+          className="w-full h-9"
           disabled={isSubmitting}
         >
           <div className="flex items-center">
-            <div className="mr-2">
-              <MapPin className="h-4 w-4" />
-            </div>
+            <MapPin className="h-4 w-4 mr-2" />
             <span>Use My Location</span>
           </div>
         </Button>
       </div>
 
       {/* Location Details Section */}
-      <div>
-        <Label>Product Location Details (Optional)</Label>
-        <p className="text-sm text-gray-600 mb-4">Enter the location details where your product is located</p>
+      <div className="space-y-2">
+        <Label className="text-sm font-medium text-gray-700">Product Location Details (Optional)</Label>
+        <p className="text-xs text-gray-600">Enter the location details where your product is located</p>
         
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="province">Province</Label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Label htmlFor="province" className="text-xs font-medium text-gray-600">Province</Label>
             <Input
               id="province"
               name="province"
               type="text"
               placeholder="e.g., Kigali City"
-              className="w-full"
+              className="w-full h-9"
             />
           </div>
-          <div>
-            <Label htmlFor="district">District</Label>
+          <div className="space-y-1">
+            <Label htmlFor="district" className="text-xs font-medium text-gray-600">District</Label>
             <Input
               id="district"
               name="district"
               type="text"
               placeholder="e.g., Nyarugenge"
-              className="w-full"
+              className="w-full h-9"
             />
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-4 mt-4">
-          <div>
-            <Label htmlFor="sector">Sector</Label>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-1">
+            <Label htmlFor="sector" className="text-xs font-medium text-gray-600">Sector</Label>
             <Input
               id="sector"
               name="sector"
               type="text"
               placeholder="e.g., Kimihurura"
-              className="w-full"
+              className="w-full h-9"
             />
           </div>
-          <div>
-            <Label htmlFor="village">Village</Label>
+          <div className="space-y-1">
+            <Label htmlFor="village" className="text-xs font-medium text-gray-600">Village</Label>
             <Input
               id="village"
               name="village"
               type="text"
               placeholder="e.g., Kacyiru"
-              className="w-full"
+              className="w-full h-9"
             />
           </div>
         </div>
       </div>
 
       {/* Availability Section */}
-      <div>
-        <Label>Product Availability</Label>
-        <div className="space-y-3 mt-2">
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-gray-700">Product Availability</Label>
+        <div className="space-y-2">
           <div className="flex items-center space-x-3">
             <Checkbox
               id="available"
@@ -404,7 +405,7 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
             </Label>
           </div>
         </div>
-        <p className="text-sm text-gray-500 mt-2">
+        <p className="text-xs text-gray-500">
           Select whether this product should be available for visitors to view and purchase, or marked as unavailable/booked.
         </p>
         {/* Hidden input for availability */}
@@ -416,9 +417,9 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
       </div>
 
       {/* Contact Information Section */}
-      <div>
-        <Label>Contact Number or WhatsApp Number</Label>
-        <div className="space-y-3 mt-2">
+      <div className="space-y-3">
+        <Label className="text-sm font-medium text-gray-700">Contact Number or WhatsApp Number</Label>
+        <div className="space-y-2">
           <div className="flex items-center space-x-3">
             <Checkbox
               id="contactMethod"
@@ -435,9 +436,9 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
               Provide contact number for customers to reach you
             </Label>
           </div>
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="contactNumber">Contact Number</Label>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <Label htmlFor="contactNumber" className="text-xs font-medium text-gray-600">Contact Number</Label>
               <Input
                 id="contactNumber"
                 name="contactNumber"
@@ -445,12 +446,12 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
                 placeholder="Enter phone number (e.g., +250788123456)"
                 value={contactNumber}
                 onChange={(e) => setContactNumber(e.target.value)}
-                className="w-full"
+                className="w-full h-9"
                 disabled={isSubmitting}
               />
             </div>
-            <div>
-              <Label htmlFor="whatsappNumber">WhatsApp Number</Label>
+            <div className="space-y-1">
+              <Label htmlFor="whatsappNumber" className="text-xs font-medium text-gray-600">WhatsApp Number</Label>
               <Input
                 id="whatsappNumber"
                 name="whatsappNumber"
@@ -458,29 +459,25 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
                 placeholder="Enter WhatsApp number (e.g., +250788123456)"
                 value={whatsappNumber}
                 onChange={(e) => setWhatsappNumber(e.target.value)}
-                className="w-full"
+                className="w-full h-9"
                 disabled={isSubmitting}
               />
             </div>
           </div>
-          <p className="text-sm text-gray-500 mt-2">
-            Provide either a contact number or WhatsApp number (or both) so customers can reach you about this product.
-          </p>
         </div>
       </div>
 
       {/* Submit Button */}
       <Button
         type="submit"
-        className="w-full"
+        className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white font-medium"
         disabled={isSubmitting}
       >
         {isSubmitting ? "Uploading..." : "Upload Product"}
       </Button>
 
-      {/* Error Message */}
       {error && (
-        <div className="p-4 rounded-lg bg-red-50 text-red-700">
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           {error}
         </div>
       )}

@@ -10,6 +10,7 @@ import SellerChatInbox from "./_components/seller-chat-inbox";
 import UserFeedback from "./_components/user-feedback";
 import ProductPriceCalculator from "./_components/product-price-calculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Calculator, Menu, X, ShoppingBag, MessageCircle, FileText, TrendingUp, MessageSquare } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function UserDashboard() {
@@ -17,6 +18,7 @@ export default function UserDashboard() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("products");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     checkAuth();
@@ -62,28 +64,117 @@ export default function UserDashboard() {
           </div>
         </div>
 
+        {/* Mobile Menu Button */}
+        <div className="sm:hidden flex justify-between items-center mb-4">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="p-2 rounded-lg bg-white shadow-md hover:shadow-lg transition-shadow"
+          >
+            <Menu className="w-6 h-6 text-gray-700" />
+          </button>
+          <h2 className="text-lg font-semibold text-gray-800">Dashboard</h2>
+          <div className="w-10"></div>
+        </div>
+
+        {/* Mobile Sidebar */}
+        <div className={`sm:hidden fixed inset-0 z-50 ${sidebarOpen ? 'block' : 'hidden'}`}>
+          <div className="fixed inset-0 bg-black bg-opacity-50" onClick={() => setSidebarOpen(false)}></div>
+          <div className="fixed left-0 top-0 h-full w-72 bg-white shadow-xl transform transition-transform">
+            <div className="p-4 border-b">
+              <div className="flex items-center justify-between">
+                <h3 className="text-lg font-semibold text-gray-800">Navigation</h3>
+                <button
+                  onClick={() => setSidebarOpen(false)}
+                  className="p-2 rounded-lg hover:bg-gray-100"
+                >
+                  <X className="w-5 h-5 text-gray-600" />
+                </button>
+              </div>
+            </div>
+            <nav className="p-4 space-y-2">
+              <button
+                onClick={() => { setActiveTab("products"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "products" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <ShoppingBag className="w-5 h-5" />
+                <span className="font-medium">My Products</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab("messages"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "messages" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <MessageCircle className="w-5 h-5" />
+                <span className="font-medium">Messages</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab("feedback"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "feedback" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <MessageSquare className="w-5 h-5" />
+                <span className="font-medium">Feedback</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab("price-calculator"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "price-calculator" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <Calculator className="w-5 h-5" />
+                <span className="font-medium">Price Calculator</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab("requested"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "requested" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <FileText className="w-5 h-5" />
+                <span className="font-medium">Requested Products</span>
+              </button>
+            </nav>
+          </div>
+        </div>
+
         {/* Main Content with Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2">
+          {/* Desktop Tabs - Hidden on Mobile */}
+          <TabsList className="hidden sm:grid w-full grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2">
             <TabsTrigger value="products" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
               My Products
             </TabsTrigger>
             <TabsTrigger value="messages" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
               Messages
             </TabsTrigger>
-            <TabsTrigger value="requested" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
-              Requested
-            </TabsTrigger>
             <TabsTrigger value="feedback" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
               Feedback
             </TabsTrigger>
-            <TabsTrigger value="price-calculator" className="text-xs sm:text-sm items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4 hidden lg:flex">
-              Price Calc
+            <TabsTrigger value="price-calculator" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              <Calculator className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="text-center">Price Calc</span>
+            </TabsTrigger>
+            <TabsTrigger value="requested" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              Requested
             </TabsTrigger>
           </TabsList>
 
           {/* Products Tab */}
-          <TabsContent value="products" className="space-y-4 sm:space-y-6">
+          <TabsContent value="products" className="space-y-6 sm:space-y-8">
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8">
               {/* Left Column - Upload Form */}
               <div className="xl:col-span-1">
@@ -130,11 +221,6 @@ export default function UserDashboard() {
             </div>
           </TabsContent>
 
-          {/* Requested Products Tab */}
-          <TabsContent value="requested">
-            <RequestedProductsManager userId={user.id} />
-          </TabsContent>
-
           {/* Messages Tab */}
           <TabsContent value="messages">
             <SellerChatInbox userId={user.id} userName={user.name} />
@@ -146,8 +232,13 @@ export default function UserDashboard() {
           </TabsContent>
 
           {/* Price Calculator Tab */}
-          <TabsContent value="price-calculator">
+          <TabsContent value="price-calculator" className="pb-20 sm:pb-24">
             <ProductPriceCalculator />
+          </TabsContent>
+
+          {/* Requested Products Tab */}
+          <TabsContent value="requested">
+            <RequestedProductsManager userId={user.id} />
           </TabsContent>
         </Tabs>
 
