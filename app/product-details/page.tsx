@@ -43,6 +43,11 @@ const getAllMedia = (product: Product | null): string[] => {
     media.push(...product.media.images);
   }
   
+  // Add main image if it exists and is not already in images array
+  if (product.media && product.media.mainImage && !media.includes(product.media.mainImage)) {
+    media.unshift(product.media.mainImage); // Add main image first
+  }
+  
   // Add videos from media object
   if (product.media && product.media.videos && product.media.videos.length > 0) {
     media.push(...product.media.videos);

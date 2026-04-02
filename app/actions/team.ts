@@ -1,12 +1,11 @@
 "use server";
 
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 
-const prisma = new PrismaClient();
-
-export async function getAllTeamMembers() {
+export async function getAllTeamMembers(limit?: number) {
   try {
     const teamMembers = await prisma.team.findMany({
+      take: limit, // Limit number of team members
       orderBy: { order: 'asc' }
     });
     
@@ -20,6 +19,8 @@ export async function getAllTeamMembers() {
 export async function createTeamMember(prevState: any, formData: FormData) {
   const name = formData.get("name") as string;
   const position = formData.get("position") as string;
+  const email = formData.get("email") as string;
+  const phone = formData.get("phone") as string;
   const imageFile = formData.get("image") as File;
   const order = parseInt(formData.get("order") as string) || 0;
 
@@ -48,6 +49,8 @@ export async function createTeamMember(prevState: any, formData: FormData) {
       data: {
         name,
         position,
+        email: email || null,
+        phone: phone || null,
         image: imageUrl,
         order: nextOrder,
       },
@@ -64,6 +67,8 @@ export async function updateTeamMember(prevState: any, formData: FormData) {
   const id = formData.get("id") as string;
   const name = formData.get("name") as string;
   const position = formData.get("position") as string;
+  const email = formData.get("email") as string;
+  const phone = formData.get("phone") as string;
   const imageFile = formData.get("image") as File;
   const order = parseInt(formData.get("order") as string) || 0;
 
@@ -85,6 +90,8 @@ export async function updateTeamMember(prevState: any, formData: FormData) {
       data: {
         name,
         position,
+        email: email || null,
+        phone: phone || null,
         order,
         ...(imageUrl && { image: imageUrl }),
       },

@@ -1,89 +1,71 @@
-import * as cloudinary from 'cloudinary';
+import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary
-cloudinary.v2.config({
-  cloud_name: 'dzikttrya',
-  api_key: '466747726444735',
-  api_secret: 'Kcg7jS0ApBQVUc45WPFg8eZQ7vA',
+// Cloudinary configuration
+cloudinary.config({
+  cloud_name: 'drmqxz9cc',
+  api_key: '136946656611862',
+  api_secret: 'z-zwivNF0QfXblaUc3N_OeN1s68',
   secure: true,
 });
 
-// Function to upload file to Cloudinary
-export async function uploadToCloudinary(file: File | Buffer, folder: string = 'products') {
-  try {
-    return new Promise((resolve, reject) => {
-      const resourceType = file instanceof File 
-        ? (file.type.startsWith('video/') ? 'video' : 'image')
-        : 'auto';
+// Helper function to upload image to Cloudinary
+export async function uploadImageToCloudinary(file: File | Buffer): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const uploadOptions = {
+      folder: 'product-images',
+      resource_type: 'image' as const,
+      quality: 'auto',
+      fetch_format: 'auto',
+    };
 
-      const uploadOptions: any = {
-        folder,
-        resource_type: resourceType,
-        public_id: `${Date.now()}-${file instanceof File ? file.name : 'upload'}`,
-        overwrite: true,
-      };
-
-      // Convert File to Buffer if needed
-      const handleUpload = async () => {
-        let uploadData: Buffer;
+    if (file instanceof File) {
+      // Convert File to buffer for Node.js environment
+      file.arrayBuffer().then(arrayBuffer => {
+        const buffer = Buffer.from(arrayBuffer);
         
-        try {
-          if (file instanceof File) {
-            // Check file size to prevent memory issues
-            const maxSize = 10 * 1024 * 1024; // 10MB limit
-            if (file.size > maxSize) {
-              throw new Error(`File size too large. Maximum size is ${maxSize / 1024 / 1024}MB`);
-            }
-            
-            // Use arrayBuffer() for server-side processing (FileReader not available in Node.js)
-            const arrayBuffer = await file.arrayBuffer();
-            uploadData = Buffer.from(arrayBuffer);
-          } else {
-            uploadData = file;
-          }
-        } catch (error: any) {
-          throw new Error(`File processing failed: ${error.message}`);
-        }
-
-        cloudinary.v2.uploader.upload_stream(
+        // Create data URI for Cloudinary
+        const dataUri = `data:${file.type};base64,${buffer.toString('base64')}`;
+        
+        cloudinary.uploader.upload(
+          dataUri,
           uploadOptions,
-          (error: any, result: any) => {
+          (error, result) => {
             if (error) {
               reject(error);
             } else {
-              resolve({
-                url: result.secure_url,
-                public_id: result.public_id,
-                resource_type: result.resource_type,
-              });
+              resolve(result!.secure_url);
             }
           }
-        ).end(uploadData);
-      };
-
-      handleUpload();
-    });
-  } catch (error) {
-    throw new Error(`Cloudinary upload failed: ${error}`);
-  }
-}
-
-// Function to delete from Cloudinary
-export async function deleteFromCloudinary(publicId: string) {
-  try {
-    return new Promise((resolve, reject) => {
-      cloudinary.v2.uploader.destroy(
-        publicId,
-        (error: any, result: any) => {
+        );
+      }).catch(reject);
+    } else {
+      // Upload from Buffer
+      const dataUri = `data:image/jpeg;base64,${file.toString('base64')}`;
+      
+      cloudinary.uploader.upload(
+        dataUri,
+        uploadOptions,
+        (error, result) => {
           if (error) {
             reject(error);
           } else {
-            resolve(result);
+            resolve(result!.secure_url);
           }
         }
       );
+    }
+  });
+}
+
+// Helper function to delete image from Cloudinary
+export async function deleteImageFromCloudinary(publicId: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader.destroy(publicId, (error, result) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve();
+      }
     });
-  } catch (error) {
-    throw new Error(`Cloudinary deletion failed: ${error}`);
-  }
+  });
 }

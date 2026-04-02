@@ -26,9 +26,9 @@ export default function Header() {
 
   const navigation = [
     { name: "Home", href: "/" },
+    { name: "About Us", href: "/about" },
     { name: "Services", href: "/services" },
-    { name: "View Products", href: "/view-products" },
-    { name: "About us", href: "/#about" },
+    { name: "Products", href: "/products" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -57,11 +57,12 @@ export default function Header() {
   return (
     <>
       <header className="absolute top-0 left-0 right-0 z-50 w-full">
-        <div className="bg-[#000000] text-white py-2 px-[2rem] animate-slideDown">
+        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 px-[2rem] animate-slideDown">
           <div className="container mx-auto flex flex-wrap items-center justify-center md:justify-between">
             <div className="hidden md:flex items-center text-[12px] space-x-6 animate-fadeInLeft">
-              <span>24/7 Professional Consulting Services</span>
-              <span>vertexconsultancy84@gmail.com</span>
+              <span>24/7 Multi-Services Available</span>
+              <span>myeduqualitypartner@gmail.com</span>
+              <span>+250 788 676 421</span>
             </div>
             <div className="flex items-center space-x-4 animate-fadeInRight">
               <div className="flex space-x-4">
@@ -70,7 +71,7 @@ export default function Header() {
                 <Instagram className="w-4 h-4 text-[#e1306c] cursor-pointer hover:scale-110 transition-transform" />
                 <Youtube className="w-4 h-4 text-[#ff0000] cursor-pointer hover:scale-110 transition-transform" />
                 <a
-                  href="https://wa.me/250784761274"
+                  href="https://wa.me/250788676421"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -82,7 +83,7 @@ export default function Header() {
         </div>
         <nav
           className={`top-0 left-0 right-0 z-40 transition-all duration-100 animate-slideDown px-[2rem] ${
-            scrolled ? "bg-[#000000] fixed" : "bg-transparent"
+            scrolled ? "bg-gradient-to-r from-blue-800/95 to-indigo-800/95 backdrop-blur-sm fixed" : "bg-transparent"
           }`}
         >
           <div className="container mx-auto">
@@ -91,8 +92,8 @@ export default function Header() {
                 href="/"
                 className="flex items-center space-x-2 text-white animate-fadeInLeft animation-delay-300"
               >
-                <span className="text-[16px] hover:text-[#F17105] transition-colors">
-                  VERTEX CONSULTING
+                <span className="text-[16px] hover:text-blue-300 transition-colors font-semibold">
+                  MY EDUQUALITY PARTNER
                 </span>
               </Link>
               <div className="hidden lg:flex items-center space-x-8 animate-fadeInUp animation-delay-500">
@@ -100,7 +101,7 @@ export default function Header() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="text-white hover:text-[#F17105] text-[16px] transition-colors animate-fadeInUp"
+                    className="text-white hover:text-blue-300 text-[16px] transition-colors animate-fadeInUp"
                     style={{ animationDelay: `${600 + index * 100}ms` }}
                   >
                     {item.name}
@@ -109,7 +110,7 @@ export default function Header() {
                 {isAdminLoggedIn && (
                   <Link
                     href="/dashboard"
-                    className="text-white hover:text-[#F17105] text-[16px] transition-colors animate-fadeInUp"
+                    className="text-white hover:text-blue-300 text-[16px] transition-colors animate-fadeInUp"
                     style={{ animationDelay: `200ms` }}
                   >
                     Dashboard
@@ -121,13 +122,13 @@ export default function Header() {
                   {isAdminLoggedIn ? (
                     <Button
                       onClick={handleLogout}
-                      className="hidden lg:flex bg-transparent border-gray-400 rounded-[20px] text-white text-sm py-1 px-4 bg-[#F17105] hover:bg-[#F17105]/50 hover:scale-105 transition-all duration-100 h-auto min-h-0 items-center"
+                      className="hidden lg:flex bg-transparent border-blue-400 rounded-[20px] text-white text-sm py-1 px-4 bg-blue-600 hover:bg-blue-500 hover:scale-105 transition-all duration-100 h-auto min-h-0 items-center"
                     >
                       <LogOut className="w-4 h-4 mr-2" /> Logout
                     </Button>
                   ) : (
                     <Link href={"/login"}>
-                      <Button className="hidden lg:block bg-transparent border-gray-400 rounded-[20px] text-white text-sm py-1 px-4 bg-[#F17105] hover:bg-[#F17105]/50 hover:scale-105 transition-all duration-100 h-auto min-h-0">
+                      <Button className="hidden lg:block bg-transparent border-blue-400 rounded-[20px] text-white text-sm py-1 px-4 bg-blue-600 hover:bg-blue-500 hover:scale-105 transition-all duration-100 h-auto min-h-0">
                         Login/Signup
                       </Button>
                     </Link>
@@ -138,7 +139,7 @@ export default function Header() {
                     onClick={() => setIsSideDrawerOpen(true)}
                     className="hidden lg:block"
                   >
-                    <AlignRight className="w-10 h-5 text-white cursor-pointer hover:text-[#F17105] hover:scale-110 transition-all duration-100" />
+                    <AlignRight className="w-10 h-5 text-white cursor-pointer hover:text-blue-300 hover:scale-110 transition-all duration-100" />
                   </button>
                   <button
                     className="lg:hidden text-white"
@@ -154,13 +155,13 @@ export default function Header() {
               </div>
             </div>
             {isMenuOpen && (
-              <div className="lg:hidden py-4 border-t border-[#F17105]/30 bg-[#000000] animate-slideDown">
+              <div className="lg:hidden py-4 border-t border-blue-400/30 bg-gradient-to-r from-blue-800/95 to-indigo-800/95 backdrop-blur-sm animate-slideDown">
                 <div className="flex flex-col space-y-4">
                   {navigation.map((item, index) => (
                     <Link
                       key={item.name}
                       href={item.href}
-                      className="text-white hover:text-[#F17105] transition-colors text-[16px] font-medium animate-fadeInLeft"
+                      className="text-white hover:text-blue-300 transition-colors text-[16px] font-medium animate-fadeInLeft"
                       style={{ animationDelay: `${index * 100}ms` }}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -170,7 +171,7 @@ export default function Header() {
                   {isAdminLoggedIn && (
                     <Link
                       href="/dashboard"
-                      className="text-white hover:text-[#F17105] transition-colors text-[16px] font-medium animate-fadeInLeft"
+                      className="text-white hover:text-blue-300 transition-colors text-[16px] font-medium animate-fadeInLeft"
                       style={{ animationDelay: `200ms` }}
                       onClick={() => setIsMenuOpen(false)}
                     >
@@ -180,13 +181,13 @@ export default function Header() {
                   {isAdminLoggedIn ? (
                     <Button
                       onClick={handleLogout}
-                      className="text-white text-[16px] bg-[#F17105] hover:bg-[#F17105]/50 w-fit animate-fadeInLeft animation-delay-500"
+                      className="text-white text-[16px] bg-blue-600 hover:bg-blue-500 w-fit animate-fadeInLeft animation-delay-500"
                     >
                       Logout
                     </Button>
                   ) : (
                     <Link href={"/login"}>
-                      <Button className="text-white text-[16px] bg-[#F17105] hover:bg-[#F17105]/50 w-fit animate-fadeInLeft animation-delay-500">
+                      <Button className="text-white text-[16px] bg-blue-600 hover:bg-blue-500 w-fit animate-fadeInLeft animation-delay-500">
                         Login
                       </Button>
                     </Link>

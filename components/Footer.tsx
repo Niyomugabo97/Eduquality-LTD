@@ -42,18 +42,11 @@ export default function Footer() {
   }, []);
 
   const services = [
-    "Management Consultancy",
-    "Business Strategy Development",
-    "Chemical Manufacturing",
-    "Fertilizers & Nitrogen Compounds",
-    "Pesticides & Agrochemicals",
-    "Paints & Coatings",
-    "Soap & Detergents",
-    "Global Trading Services",
-    "Wholesale Trade",
-    "Airtime Service Retail",
-    "Cargo Handling",
-    "Technical Testing & Analysis",
+    "NIBEZA LOIM FOUNDATION",
+    "NIBEZA LOIM SALON",
+    "NIBEZA LOIM SNACKS",
+    "NIBEZA LOIM DELIVERY",
+    "OTHER PROFESSIONAL SERVICES",
   ];
 
   const socialLinks = [
@@ -61,7 +54,7 @@ export default function Footer() {
     { icon: Twitter, href: "https://twitter.com" },
     { icon: Instagram, href: "https://instagram.com" },
     { icon: Youtube, href: "https://youtube.com" },
-    { icon: MessageCircle, href: "https://wa.me/250784761274" },
+    { icon: MessageCircle, href: "https://wa.me/250788676421" },
   ];
 
   return (
@@ -70,8 +63,8 @@ export default function Footer() {
       className="relative bg-cover bg-center bg-no-repeat text-white px-[3rem] sm:px-[3rem] md:px-[3rem] lg:px-[4rem]"
       style={{ backgroundImage: "url(/images/footer-bg.jpg)" }}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-black/80 via-black/70 to-black/80"></div>
-      <div className="absolute inset-0 bg-[#F17105]/5"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/90 via-blue-800/80 to-indigo-900/90"></div>
+      <div className="absolute inset-0 bg-blue-600/5"></div>
       <div className="relative z-10">
         <div className="container mx-auto px-4 py-12">
           <div className="grid lg:grid-cols-6 gap-6">
@@ -93,8 +86,8 @@ export default function Footer() {
                     : "opacity-0 translate-y-[30px]"
                 }`}
               >
-                <span className="text-xl font-bold hover:text-[#F17105] transition-colors duration-100">
-                  VERTEX CONSULTING
+                <span className="text-xl font-bold hover:text-blue-400 transition-colors duration-100">
+                  MY EDUQUALITY PARTNER
                 </span>
               </Link>
               <p
@@ -105,10 +98,10 @@ export default function Footer() {
                     : "opacity-0 translate-y-[30px]"
                 }`}
               >
-                Ready to transform your business with our professional
-                consulting services? Contact us today for a free consultation
-                and discover how we can help you achieve your business goals
-                through strategic planning and operational excellence.
+                Your trusted multi-service partner providing educational support, 
+                business services, beauty care, delivery solutions, and charitable activities. 
+                Contact us today to discover how we can meet your diverse needs with 
+                professional excellence and community commitment.
               </p>
               <div
                 key={`social-${animationKey}`}
@@ -124,7 +117,7 @@ export default function Footer() {
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="hover:text-[#F17105] transition-all duration-100"
+                    className="hover:text-blue-400 transition-all duration-100"
                   >
                     <Icon
                       className="w-4 h-4 cursor-pointer hover:scale-125 hover:-translate-y-1 transition-transform"
@@ -175,8 +168,8 @@ export default function Footer() {
                           : "0ms",
                       }}
                     >
-                      <span className="text-gray-300 hover:text-[#F17105] transition-all duration-100 cursor-pointer block text-sm hover:translate-x-2 hover:font-medium relative">
-                        <span className="absolute left-0 w-0 h-0.5 bg-[#F17105] bottom-0 transition-all duration-100 group-hover:w-full"></span>
+                      <span className="text-gray-300 hover:text-blue-400 transition-all duration-100 cursor-pointer block text-sm hover:translate-x-2 hover:font-medium relative">
+                        <span className="absolute left-0 w-0 h-0.5 bg-blue-400 bottom-0 transition-all duration-100 group-hover:w-full"></span>
                         {service}
                       </span>
                     </div>
@@ -198,8 +191,8 @@ export default function Footer() {
                           : "0ms",
                       }}
                     >
-                      <span className="text-gray-300 hover:text-[#F17105] transition-all duration-100 cursor-pointer block text-sm hover:translate-x-2 hover:font-medium relative">
-                        <span className="absolute left-0 w-0 h-0.5 bg-[#F17105] bottom-0 transition-all duration-100 group-hover:w-full"></span>
+                      <span className="text-gray-300 hover:text-blue-400 transition-all duration-100 cursor-pointer block text-sm hover:translate-x-2 hover:font-medium relative">
+                        <span className="absolute left-0 w-0 h-0.5 bg-blue-400 bottom-0 transition-all duration-100 group-hover:w-full"></span>
                         {service}
                       </span>
                     </div>
@@ -226,7 +219,7 @@ export default function Footer() {
                   },
                   {
                     title: "Send a Message",
-                    info: "vertexconsultancy84@gmail.com",
+                    info: "myeduqualitypartner@gmail.com",
                     delay: 1400,
                   },
                 ].map((item, index) => (
@@ -257,7 +250,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div
           key={`bottom-bar-${animationKey}`}
-          className={`border-t border-[#F17105]/30 transition-all duration-100 ${
+          className={`border-t border-blue-400/30 transition-all duration-100 ${
             isVisible
               ? "animate-fadeInUp animation-delay-1600"
               : "opacity-0 translate-y-[30px]"
@@ -265,8 +258,8 @@ export default function Footer() {
         >
           <div className="container mx-auto px-4 py-4">
             <div className="flex flex-col md:flex-row justify-center items-center">
-              <p className="text-gray-300 text-sm mb-2 md:mb-0 hover:text-[#F17105] transition-colors cursor-pointer">
-                © VERTEX CONSULTING Ltd 2025
+              <p className="text-gray-300 text-sm mb-2 md:mb-0 hover:text-blue-400 transition-colors cursor-pointer">
+                © MY EDUQUALITY PARTNER LTD 2026
               </p>
             </div>
           </div>

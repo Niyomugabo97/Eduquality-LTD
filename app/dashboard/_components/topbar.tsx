@@ -8,7 +8,6 @@ const navLinks = [
   { href: "/", label: "Home" },
   { href: "/dashboard", label: "Dashboard" },
   { href: "/dashboard/contacts", label: "Contacts" },
-  { href: "/dashboard/create-user", label: "Create User" },
 ];
 
 export default function TopBar() {

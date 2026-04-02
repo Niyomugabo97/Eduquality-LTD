@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { createProduct } from "@/app/actions/product";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import { MapPin, Upload, X, Image as ImageIcon, Video } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { MapPin, Upload, X, Image as ImageIcon, ShoppingBag } from "lucide-react";
 
 interface SimpleEnhancedProductUploadFormProps {
   onSuccess?: () => void;
@@ -15,16 +16,37 @@ interface SimpleEnhancedProductUploadFormProps {
 
 export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnhancedProductUploadFormProps) {
   const [mainImageIndex, setMainImageIndex] = useState(0);
-  const [mainVideoIndex, setMainVideoIndex] = useState<number | null>(null);
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-  const [previewVideos, setPreviewVideos] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [isAvailable, setIsAvailable] = useState(true); // Default to available
-  const [contactNumber, setContactNumber] = useState(""); // Contact number state
-  const [whatsappNumber, setWhatsappNumber] = useState(""); // WhatsApp number state
+  const [isAvailable, setIsAvailable] = useState(true);
+  const [contactNumber, setContactNumber] = useState("");
+  const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [category, setCategory] = useState("BEAUTY_PERSONAL_CARE");
+  const [userId, setUserId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
+
+  // Get user ID on component mount
+  useEffect(() => {
+    const getUserId = async () => {
+      try {
+        const response = await fetch('/api/auth/user');
+        if (response.ok) {
+          const userData = await response.json();
+          return userData.id;
+        }
+      } catch (error) {
+        console.error('Error getting user ID:', error);
+        return null;
+      }
+    };
+
+    getUserId().then(id => {
+      if (id) {
+        setUserId(id);
+      }
+    });
+  }, []);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -46,28 +68,11 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
         alert(`Invalid image file or size too large. Please use JPEG, PNG, GIF, or WebP under 5MB.`);
       }
     });
-  };
 
-  const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
-
-    const newVideos: string[] = [];
-    const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-    
-    Array.from(files).forEach(file => {
-      if (allowedTypes.includes(file.type) && file.size <= 10 * 1024 * 1024) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-          const result = event.target?.result as string;
-          newVideos.push(result);
-          setPreviewVideos(prev => [...prev, ...newVideos]);
-        };
-        reader.readAsDataURL(file);
-      } else {
-        alert(`Invalid video file or size too large. Please use MP4, WebM, or OGG under 10MB.`);
-      }
-    });
+    // Limit to 1 image only
+    if (newImages.length > 1) {
+      setPreviewImages([newImages[0]]);
+    }
   };
 
   const removeImage = (index: number) => {
@@ -77,21 +82,8 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
     }
   };
 
-  const removeVideo = (index: number) => {
-    setPreviewVideos(prev => prev.filter((_, i) => i !== index));
-    if (mainVideoIndex === index) {
-      setMainVideoIndex(null);
-    }
-  };
-
   const setAsMainImage = (index: number) => {
     setMainImageIndex(index);
-    setMainVideoIndex(null);
-  };
-
-  const setAsMainVideo = (index: number) => {
-    setMainVideoIndex(index);
-    setMainImageIndex(-1);
   };
 
   const handleLocationClick = () => {
@@ -126,17 +118,14 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
 
     const formData = new FormData(e.currentTarget);
     
-    // Add all preview images to FormData
-    for (let i = 0; i < previewImages.length; i++) {
-      const file = await dataUrlToFile(previewImages[i], `image_${i}.jpg`, 'image/jpeg');
+    // Add single image to FormData
+    if (previewImages.length > 0) {
+      const file = await dataUrlToFile(previewImages[0], `image.jpg`, 'image/jpeg');
       formData.append('image', file);
     }
     
-    // Add all preview videos to FormData
-    for (let i = 0; i < previewVideos.length; i++) {
-      const file = await dataUrlToFile(previewVideos[i], `video_${i}.mp4`, 'video/mp4');
-      formData.append('video', file);
-    }
+    // Add userId to FormData
+    formData.append('userId', userId || 'test-user-id-12345'); // Use actual user ID from auth
     
     // Use the new upload API instead of server action
     try {
@@ -151,9 +140,7 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
         onSuccess?.();
         // Reset form
         setPreviewImages([]);
-        setPreviewVideos([]);
         setMainImageIndex(0);
-        setMainVideoIndex(null);
         alert("Product uploaded successfully!");
       } else {
         setError(result.message);
@@ -194,6 +181,46 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
         />
       </div>
 
+      {/* Category */}
+      <div>
+        <Label htmlFor="category">Product Category</Label>
+        <Select value={category} onValueChange={setCategory} name="category">
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="BEAUTY_PERSONAL_CARE">
+              <div className="flex items-center">
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Beauty and Personal Care Services
+              </div>
+            </SelectItem>
+            <SelectItem value="WHOLESALE_SCHOOL_MATERIALS">
+              <div className="flex items-center">
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                Wholesale School Materials
+              </div>
+            </SelectItem>
+            <SelectItem value="SNACK_PRODUCTION">
+              <div className="flex items-center">
+                <div className="mr-2">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <span>Snack Production</span>
+              </div>
+            </SelectItem>
+            <SelectItem value="MANUFACTURING_TOOLS">
+              <div className="flex items-center">
+                <div className="mr-2">
+                  <MapPin className="h-4 w-4" />
+                </div>
+                <span>Manufacturing Tools</span>
+              </div>
+            </SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
       {/* Price */}
       <div>
         <Label htmlFor="price">Price (Optional)</Label>
@@ -208,142 +235,50 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
         />
       </div>
 
-      {/* Images Upload */}
+      {/* Images Upload - Single Image Only */}
       <div>
-        <Label>Product Images (up to 2)</Label>
+        <Label>Product Image (Required)</Label>
         <div className="space-y-4">
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+          <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 bg-gradient-to-br from-blue-50 to-indigo-50">
             <input
               ref={fileInputRef}
               type="file"
               accept="image/*"
-              multiple
               onChange={handleImageUpload}
               className="hidden"
             />
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="flex items-center space-x-2 text-[#F17105] hover:text-[#F17105]/90 font-semibold"
-              disabled={isSubmitting}
-            >
-              <Upload className="h-4 w-4" />
-              Click to upload images
-            </button>
-            <p className="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 5MB each</p>
-          </div>
-
-          {/* Image Previews */}
-          {previewImages.length > 0 && (
-            <div className="grid grid-cols-2 gap-4">
-              {previewImages.map((image, index) => (
-                <div key={index} className="relative group">
-                  <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-gray-200">
-                    <img
-                      src={image}
-                      alt={`Product image ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                    {mainImageIndex === index && (
-                      <div className="absolute top-2 left-2 bg-blue-500 text-white text-xs px-2 py-1 rounded">
-                        Main
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <Button
-                      type="button"
-                      variant={mainImageIndex === index ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setAsMainImage(index)}
-                      disabled={isSubmitting}
-                    >
-                      {mainImageIndex === index ? "Main Image" : "Set as Main"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeImage(index)}
-                      disabled={isSubmitting}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+            <div className="text-center">
+              {previewImages.length > 0 ? (
+                <div className="relative inline-block">
+                  <img
+                    src={previewImages[0]}
+                    alt="Product preview"
+                    className="w-32 h-32 object-cover rounded-lg shadow-md border-2 border-blue-200"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => removeImage(0)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Videos Upload */}
-      <div>
-        <Label>Product Videos (up to 1)</Label>
-        <div className="space-y-4">
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
-            <input
-              ref={videoInputRef}
-              type="file"
-              accept="video/*"
-              multiple
-              onChange={handleVideoUpload}
-              className="hidden"
-            />
-            <button
-              type="button"
-              onClick={() => videoInputRef.current?.click()}
-              className="flex items-center space-x-2 text-[#F17105] hover:text-[#F17105]/90 font-semibold"
-              disabled={isSubmitting}
-            >
-              <Upload className="h-4 w-4" />
-              Click to upload video
-            </button>
-            <p className="text-sm text-gray-500 mt-2">MP4, WebM up to 10MB</p>
-          </div>
-
-          {/* Video Previews */}
-          {previewVideos.length > 0 && (
-            <div className="space-y-4">
-              {previewVideos.map((video, index) => (
-                <div key={index} className="relative group">
-                  <div className="relative w-full h-32 rounded-lg overflow-hidden border-2 border-gray-200">
-                    <video
-                      src={video}
-                      className="w-full h-full object-cover"
-                      controls={false}
-                      muted
-                    />
-                    {mainVideoIndex === index && (
-                      <div className="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded">
-                        Main Video
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex justify-between mt-2">
-                    <Button
-                      type="button"
-                      variant={mainVideoIndex === index ? "default" : "outline"}
-                      size="sm"
-                      onClick={() => setAsMainVideo(index)}
-                      disabled={isSubmitting}
-                    >
-                      {mainVideoIndex === index ? "Main Video" : "Set as Main"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => removeVideo(index)}
-                      disabled={isSubmitting}
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  </div>
+              ) : (
+                <div className="text-center">
+                  <ImageIcon className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                    disabled={isSubmitting}
+                  >
+                    Choose Image
+                  </button>
+                  <p className="text-sm text-gray-500 mt-2">JPEG, PNG, GIF, WebP (Max 5MB)</p>
                 </div>
-              ))}
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
 
@@ -381,8 +316,12 @@ export default function SimpleEnhancedProductUploadForm({ onSuccess }: SimpleEnh
           className="w-full mt-2"
           disabled={isSubmitting}
         >
-          <MapPin className="h-4 w-4 mr-2" />
-          Use My Location
+          <div className="flex items-center">
+            <div className="mr-2">
+              <MapPin className="h-4 w-4" />
+            </div>
+            <span>Use My Location</span>
+          </div>
         </Button>
       </div>
 

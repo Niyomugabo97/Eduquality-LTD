@@ -7,11 +7,11 @@ export default function Hero() {
   
   // Array of images for the carousel
   const heroImages = [
-    "/images/vertex1.png",
-    "/images/vertex2.png", 
-    "/images/vertex3.jpeg",
-    "/images/vertex4.jpeg",
-    "/images/vertex5.jpeg",
+    "/images/eduquality1.png",
+    "/images/eduquality2.png", 
+    "/images/eduquality3.jpeg",
+    "/images/eduquality4.jpeg",
+    "/images/eduquality5.jpeg",
     
   ];
 
@@ -59,18 +59,17 @@ export default function Hero() {
       </div>
 
       {/* Enhanced overlay with gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-black/70"></div>
-      <div className="absolute inset-0 bg-[#F17105]/10"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-blue-700/50 to-indigo-900/80"></div>
+      <div className="absolute inset-0 bg-[#2563eb]/10"></div>
       
       {/* Content */}
       <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto mt-[5rem]">
-        <h1 className="text-3xl md:text-5xl lg:text-7xl text-[#F17105] font-bold mb-6 leading-tight animate-fadeInUp animation-delay-800">
-          VERTEX CONSULTING LTD
+        <h1 className="text-3xl md:text-5xl lg:text-7xl text-white font-bold mb-6 leading-tight animate-fadeInUp animation-delay-800">
+          MY EDUQUALITY PARTNER LTD
         </h1>
-        <p className="text-[12px] md:text-[16px] mb-8 max-w-2xl mx-auto animate-fadeInUp animation-delay-1000">
-          Your trusted business partner providing comprehensive management
-          consultancy and professional services to drive your organization
-          forward.
+        <p className="text-[12px] md:text-[16px] mb-8 max-w-2xl mx-auto text-white/90 animate-fadeInUp animation-delay-1000">
+          Your trusted multi-service partner providing educational support, business services, 
+          beauty care, delivery solutions, and charitable activities.
         </p>
         
         {/* Image Indicators */}
@@ -80,7 +79,7 @@ export default function Hero() {
               key={index}
               className={`w-2 h-2 rounded-full transition-all duration-300 ${
                 index === currentImageIndex 
-                  ? 'bg-[#F17105] w-8' 
+                  ? 'bg-white w-8' 
                   : 'bg-white/50 hover:bg-white/70'
               }`}
               onClick={() => setCurrentImageIndex(index)}

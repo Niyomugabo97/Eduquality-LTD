@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
@@ -20,42 +20,54 @@ export async function GET() {
         id: "1",
         name: "IRADUKUNDA Stiven",
         position: "Chief Executive Officer",
-        image: "/images/team/stiven.jpg",
+        image: "/images/worker1.jpg",
+        email: "stiven@eduquality.rw",
+        phone: "+250788676421",
         order: 1
       },
       {
         id: "2",
         name: "GUSENGA Benjamin",
         position: "Project Manager",
-        image: "/images/team/benjamin.jpg",
+        image: "/images/worker2.jpg",
+        email: "benjamin@eduquality.rw",
+        phone: "+250788676422",
         order: 2
       },
       {
         id: "3",
         name: "AKIMANIMPAYE Rachel",
         position: "Secretary",
-        image: "/images/team/rachel.jpg",
+        image: "/images/worker3.jpg",
+        email: "rachel@eduquality.rw",
+        phone: "+250788676423",
         order: 3
       },
       {
         id: "4",
         name: "MASENGESHO Bertin",
         position: "Accountant",
-        image: "/images/team/bertin.jpg",
+        image: "/images/worker4.jpg",
+        email: "bertin@eduquality.rw",
+        phone: "+250788676424",
         order: 4
       },
       {
         id: "5",
         name: "NIRAGIRE Magnifique",
         position: "IT Specialist",
-        image: "/images/team/magnifique.jpg",
+        image: "/images/worker5.jpg",
+        email: "magnifique@eduquality.rw",
+        phone: "+250788676425",
         order: 5
       },
       {
         id: "6",
         name: "Sostene BANANAYO",
         position: "Developer",
-        image: "/images/team/sostene.jpg",
+        image: "/images/profile.jpg",
+        email: "sostene@eduquality.rw",
+        phone: "+250788676426",
         order: 6
       }
     ];

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function GET(
   request: NextRequest,
@@ -52,14 +52,21 @@ export async function GET(
         ...product,
         contactNumber: (product as any).contactNumber || null,
         whatsappNumber: (product as any).whatsappNumber || null,
+        // Handle both new media format and legacy image fields
         media: mediaData
           ? {
-              images: mediaData.images,
-              videos: mediaData.videos,
-              mainImage: mediaData.mainImage,
-              mainVideo: mediaData.mainVideo,
+              images: mediaData.images || [],
+              videos: mediaData.videos || [],
+              mainImage: mediaData.mainImage || null,
+              mainVideo: mediaData.mainVideo || null,
             }
-          : null,
+          : {
+              // Fallback to legacy fields
+              images: (product as any).images || [],
+              mainImage: (product as any).mainImage || (product as any).image || null,
+              videos: [],
+              mainVideo: null,
+            },
       },
     });
   } catch (error) {

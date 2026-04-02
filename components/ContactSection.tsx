@@ -102,8 +102,8 @@ export default function ContactSection() {
                 : "opacity-0 translate-y-[30px]"
             }`}
           >
-            Whether you need management consultancy, business development
-            support, or have questions about our services, this is the place to
+            Whether you need business services, beauty care, 
+            delivery solutions, or have questions about our charitable activities, this is the place to
             reach us. Please fill out the form below with your details and
             message, and we'll get back to you as soon as possible.
           </p>
@@ -112,17 +112,17 @@ export default function ContactSection() {
           {/* Left */}
           <div
             key={`left-panel-${animationKey}`}
-            className={`flex w-full bg-[#E1EBE2] lg:w-1/2 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-100 ${
+            className={`flex w-full bg-gradient-to-br from-blue-50 to-indigo-50 lg:w-1/2 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-100 ${
               isVisible
                 ? "animate-fadeInLeft animation-delay-600"
                 : "opacity-0 translate-x-[-50px]"
             }`}
           >
             <div className="relative h-[350px] w-1/2 overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-r from-[#F17105]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-100 z-10"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-100 z-10"></div>
               <img
-                src="/images/call-center.jpg?height=400&width=400"
-                alt="Contact professional"
+                src="/images/contact-phone.jpg"
+                alt="Contact MY EDUQUALITY PARTNER LTD"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-100"
               />
             </div>
@@ -138,13 +138,13 @@ export default function ContactSection() {
                 {
                   icon: Phone,
                   title: "Call Us Directly",
-                  info: "+250 784 761 274",
+                  info: "+250 788 676 421",
                   delay: 1200,
                 },
                 {
                   icon: Mail,
                   title: "Send a Message",
-                  info: "vertexconsultancy84@gmail.com",
+                  info: "myeduqualitypartner@gmail.com",
                   delay: 1400,
                 },
               ].map((item, index) => (
@@ -161,14 +161,14 @@ export default function ContactSection() {
                   }}
                 >
                   <div className="flex items-start space-x-3">
-                    <div className="bg-[#F17105]/20 p-2 rounded-full hover:bg-[#F17105]/30 transition-colors duration-100 hover:scale-110 transform">
-                      <item.icon className="w-4 h-4 text-[#F17105]" />
+                    <div className="bg-blue-600/20 p-2 rounded-full hover:bg-blue-600/30 transition-colors duration-100 hover:scale-110 transform">
+                      <item.icon className="w-4 h-4 text-blue-600" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1 text-[14px] hover:text-[#F17105] transition-colors">
+                      <h3 className="font-semibold text-gray-900 mb-1 text-[14px] hover:text-blue-600 transition-colors">
                         {item.title}
                       </h3>
-                      <p className="text-gray-600 text-[12px] hover:text-[#F17105] transition-colors cursor-pointer">
+                      <p className="text-gray-600 text-[12px] hover:text-blue-600 transition-colors cursor-pointer">
                         {item.info}
                       </p>
                     </div>
@@ -229,7 +229,7 @@ export default function ContactSection() {
                       placeholder={field.placeholder}
                       required={field.required}
                       disabled={isPending}
-                      className="w-full h-10 px-4 border text-[12px] placeholder:text-[12px] border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent hover:border-[#F17105]/50 transition-all duration-100 disabled:opacity-50"
+                      className="w-full h-10 px-4 border text-[12px] placeholder:text-[12px] border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent hover:border-blue-600/50 transition-all duration-100 disabled:opacity-50"
                     />
                     {state.errors?.[
                       field.name as keyof typeof state.errors
@@ -258,7 +258,7 @@ export default function ContactSection() {
                     required
                     rows={3}
                     disabled={isPending}
-                    className="w-full px-4 py-2 text-[12px] placeholder:text-[12px] border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent resize-none hover:border-[#F17105]/50 transition-all duration-100 disabled:opacity-50"
+                    className="w-full px-4 py-2 text-[12px] placeholder:text-[12px] border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-none hover:border-blue-600/50 transition-all duration-100 disabled:opacity-50"
                   />
                   {state.errors?.message && (
                     <p className="text-red-500 text-sm mt-1">
@@ -294,7 +294,7 @@ export default function ContactSection() {
                   <Button
                     type="submit"
                     disabled={isPending}
-                    className="w-[6rem] bg-[#F17105] hover:bg-[#F17105]/90 text-white text-[12px] font-semibold rounded-[5px] hover:scale-105 transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                    className="w-[6rem] bg-blue-600 hover:bg-blue-500 text-white text-[12px] font-semibold rounded-[5px] hover:scale-105 transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                   >
                     {isPending ? (
                       <div className="flex items-center space-x-2">

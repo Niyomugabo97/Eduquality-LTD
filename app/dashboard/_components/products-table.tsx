@@ -133,11 +133,12 @@ export default function ProductsTable({ products, onDeleteProduct, isDeleting }:
                     </div>
                   </TableCell>
                   <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
+                    <div className="flex flex-col sm:flex-row items-center justify-end gap-2">
                       <Button
                         variant="outline"
                         size="sm"
                         onClick={() => handleViewProduct(product)}
+                        className="w-full sm:w-auto"
                       >
                         <Eye className="w-4 h-4 mr-1" />
                         View
@@ -147,6 +148,7 @@ export default function ProductsTable({ products, onDeleteProduct, isDeleting }:
                         size="sm"
                         onClick={() => handleDeleteClick(product)}
                         disabled={isDeleting}
+                        className="w-full sm:w-auto"
                       >
                         <Trash2 className="w-4 h-4 mr-1" />
                         Delete

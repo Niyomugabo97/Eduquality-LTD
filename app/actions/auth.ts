@@ -5,7 +5,7 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 const SESSION_DURATION = 7 * 24 * 60 * 60; // 7 days
 
@@ -77,7 +77,9 @@ export async function login(prevState: any, formData: FormData) {
 
 export async function logout() {
   const cookieStore = await cookies();
+  // Delete both admin and user session cookies
   cookieStore.delete("session_token");
+  cookieStore.delete("user_session");
   redirect("/");
 }
 

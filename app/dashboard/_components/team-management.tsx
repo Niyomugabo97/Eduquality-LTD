@@ -41,6 +41,8 @@ interface TeamMember {
   name: string;
   position: string;
   image: string;
+  email?: string;
+  phone?: string;
   order: number;
   createdAt: string;
   updatedAt: string;
@@ -166,6 +168,8 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
                 <TableHead>Order</TableHead>
                 <TableHead>Team Member</TableHead>
                 <TableHead>Position</TableHead>
+                <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
                 <TableHead>Image</TableHead>
                 <TableHead className="text-right">Actions</TableHead>
               </TableRow>
@@ -203,6 +207,28 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
                     <div className="text-sm text-gray-500">ID: {member.id.slice(0, 8)}...</div>
                   </TableCell>
                   <TableCell>{member.position}</TableCell>
+                  <TableCell>
+                    {member.email ? (
+                      <div className="text-sm">
+                        <a href={`mailto:${member.email}`} className="text-blue-600 hover:underline">
+                          {member.email}
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-400">No email</div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {member.phone ? (
+                      <div className="text-sm">
+                        <a href={`tel:${member.phone}`} className="text-green-600 hover:underline">
+                          {member.phone}
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="text-sm text-gray-400">No phone</div>
+                    )}
+                  </TableCell>
                   <TableCell>
                     {member.image ? (
                       <div className="w-12 h-12 rounded-lg overflow-hidden bg-gray-100">
@@ -247,50 +273,88 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
 
         {/* Create Team Member Dialog */}
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Add Team Member</DialogTitle>
+              <DialogTitle className="text-xl">Add Team Member</DialogTitle>
               <DialogDescription>
                 Add a new team member to display on the website.
               </DialogDescription>
             </DialogHeader>
             <form ref={createFormRef} action={createFormAction}>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="name">Name</Label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="name" className="text-sm font-semibold text-gray-700">
+                    Full Name <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="name"
                     name="name"
                     type="text"
-                    placeholder="Enter team member name"
+                    placeholder="Enter team member's full name"
                     required
                     disabled={isCreating}
+                    className="h-11"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="position">Position</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="position" className="text-sm font-semibold text-gray-700">
+                    Position / Title <span className="text-red-500">*</span>
+                  </Label>
                   <Input
                     id="position"
                     name="position"
                     type="text"
-                    placeholder="Enter position/title"
+                    placeholder="e.g., CEO, Manager, Developer"
                     required
                     disabled={isCreating}
+                    className="h-11"
                   />
                 </div>
-                <div>
-                  <Label htmlFor="order">Display Order</Label>
+                <div className="space-y-2">
+                  <Label htmlFor="email" className="text-sm font-semibold text-gray-700">
+                    Email Address <span className="text-gray-400 font-normal">(Optional)</span>
+                  </Label>
+                  <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="member@company.com"
+                    disabled={isCreating}
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="phone" className="text-sm font-semibold text-gray-700">
+                    Phone Number <span className="text-gray-400 font-normal">(Optional)</span>
+                  </Label>
+                  <Input
+                    id="phone"
+                    name="phone"
+                    type="tel"
+                    placeholder="+250 7XX XXX XXX"
+                    disabled={isCreating}
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="order" className="text-sm font-semibold text-gray-700">
+                    Display Order <span className="text-gray-400 font-normal">(Optional)</span>
+                  </Label>
                   <Input
                     id="order"
                     name="order"
                     type="number"
                     placeholder="0"
                     disabled={isCreating}
+                    className="h-11"
                   />
+                  <p className="text-xs text-gray-500">Lower numbers appear first</p>
                 </div>
-                <div>
-                  <Label htmlFor="image">Photo</Label>
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                <div className="space-y-2 md:col-span-2">
+                  <Label htmlFor="image" className="text-sm font-semibold text-gray-700">
+                    Profile Photo <span className="text-red-500">*</span>
+                  </Label>
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-400 transition-colors">
                     <input
                       ref={createFileInputRef}
                       id="image"
@@ -304,16 +368,16 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
                       type="button"
                       onClick={() => createFileInputRef.current?.click()}
                       disabled={isCreating}
-                      className="text-orange-600 hover:text-orange-700 font-semibold"
+                      className="text-orange-600 hover:text-orange-700 font-semibold flex flex-col items-center"
                     >
-                      <Upload className="w-8 h-8 mx-auto mb-2" />
-                      Click to upload photo
+                      <Upload className="w-10 h-10 mb-2" />
+                      <span>Click to upload photo</span>
                     </button>
-                    <p className="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                    <p className="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p>
                   </div>
                 </div>
                 {createState.message && (
-                  <div className={`p-3 rounded-lg text-sm ${
+                  <div className={`p-3 rounded-lg text-sm md:col-span-2 ${
                     createState.success
                       ? "bg-green-50 text-green-700 border border-green-200"
                       : "bg-red-50 text-red-700 border border-red-200"
@@ -322,7 +386,7 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
                   </div>
                 )}
               </div>
-              <DialogFooter>
+              <DialogFooter className="mt-6">
                 <Button
                   type="button"
                   variant="outline"
@@ -373,6 +437,28 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
                       defaultValue={selectedMember.position}
                       placeholder="Enter position/title"
                       required
+                      disabled={isUpdating}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-email">Email (Optional)</Label>
+                    <Input
+                      id="edit-email"
+                      name="email"
+                      type="email"
+                      defaultValue={selectedMember.email || ''}
+                      placeholder="Enter email address"
+                      disabled={isUpdating}
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="edit-phone">Phone (Optional)</Label>
+                    <Input
+                      id="edit-phone"
+                      name="phone"
+                      type="tel"
+                      defaultValue={selectedMember.phone || ''}
+                      placeholder="Enter phone number"
                       disabled={isUpdating}
                     />
                   </div>

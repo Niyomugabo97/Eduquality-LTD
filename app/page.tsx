@@ -5,7 +5,7 @@ import AboutSection from "@/components/aboutUsSection";
 import ContactSection from "@/components/ContactSection";
 import { Server } from "node:http";
 import ServicesSection from "@/components/ServicesSection";
-import HomeServices from "@/components/HomeServices";
+import CategorizedProducts from "@/components/CategorizedProducts";
 
 export default function HomePage() {
   return (
@@ -13,7 +13,7 @@ export default function HomePage() {
       <Header />
       <Hero />
       <AboutSection />
-      <HomeServices />
+      <CategorizedProducts />
       <ContactSection />
       <Footer />
     </main>

@@ -4,130 +4,91 @@ import Link from "next/link";
 const services = [
   {
     id: 1,
-    title: "Management Consultancy",
-    description:
-      "Strategic business consulting services to optimize your operations and drive sustainable growth.",
-    image: "/images/service1.jpg?height=300&width=400",
-    date: "24/7",
-    comments: "Available",
+    title: "School Strategic Planning",
+    description: "Comprehensive strategic planning services for educational institutions including curriculum development, academic planning, and institutional growth strategies.",
+    image: "/images/strategic-plan.png",
+    date: "Education",
+    comments: "Strategic Planning",
   },
   {
     id: 2,
-    title: "Business Strategy Development",
-    description:
-      "Comprehensive strategic planning and business development services for long-term success.",
-    image: "/images/service1.jpg?height=300&width=400",
-    date: "Strategic",
-    comments: "Planning",
+    title: "School Action Plans",
+    description: "Development and implementation of effective school action plans with clear objectives, measurable outcomes, and continuous improvement processes.",
+    image: "/images/action-plan.jpg",
+    date: "Education",
+    comments: "Action Planning",
   },
   {
     id: 3,
-    title: "Customer Management",
-    description:
-      "Customer acquisition, Customer data management, customer retention royalty, custmer relationship building and customer performance Management.",
-    image: "/images/service2.jpg?height=300&width=400",
-    date: "Quality",
-    comments: "Assured",
+    title: "Annual Budgeting",
+    description: "Professional annual budgeting services for schools and organizations, including financial planning, resource allocation, and expense management.",
+    image: "/images/budget.jpg",
+    date: "Finance",
+    comments: "Budget Management",
   },
-
   {
     id: 4,
-    title: "Fertilizers & Nitrogen Compounds",
-    description:
-      "Specialized consulting for fertilizer production and nitrogen compound manufacturing.",
-    image: "/images/service7.jpg?height=300&width=400",
-    date: "Agro",
-    comments: "Solutions",
+    title: "Human Resource Management",
+    description: "Complete HR management solutions including recruitment, training, performance management, and employee development programs.",
+    image: "/images/human-resource-mgmt.jpg",
+    date: "Management",
+    comments: "HR Services",
   },
   {
     id: 5,
-    title: "Pesticides & Agrochemicals",
-    description:
-      "Expert guidance in pesticide and agrochemical product development and manufacturing.",
-    image: "/images/service8.jpg?height=300&width=400",
-    date: "Safe",
-    comments: "Products",
+    title: "Job Contract Design",
+    description: "Professional job contract design and development services ensuring compliance, clarity, and fair employment practices.",
+    image: "/images/contract.webp",
+    date: "Legal",
+    comments: "Contract Services",
   },
   {
     id: 6,
-    title: "Paints & Coatings",
-    description:
-      "Consulting services for paint, varnish, and coating manufacturing processes.",
-    image: "/images/service5.jpg?height=300&width=400",
-    date: "Quality",
-    comments: "Coatings",
+    title: "Child Protection Policies and Training",
+    description: "Development and implementation of child protection policies, training programs, and safe environment creation for educational institutions.",
+    image: "/images/nibeza-foundation.jpeg",
+    date: "Protection",
+    comments: "Child Safety",
   },
   {
     id: 7,
-    title: "Soap & Detergents",
-    description:
-      "Professional consulting for soap, detergent, and cleaning product manufacturing.",
-    image: "/images/service6.jpg?height=300&width=400",
-    date: "Clean",
-    comments: "Solutions",
+    title: "Wholesale School Materials",
+    description: "Bulk supply of educational materials including computers, books, stationery, and learning resources for schools.",
+    image: "/images/school-materials.jpg",
+    date: "Supply",
+    comments: "Educational Materials",
   },
   {
     id: 8,
-    title: "Global Trading Services",
-    description:
-      "International trade consulting and global market entry strategies for businesses.",
-    image: "/images/service1.jpg?height=300&width=400",
-    date: "Global",
-    comments: "Reach",
+    title: "Snack Production and Manufacturing",
+    description: "Large-scale snack production and manufacturing services with quality control and distribution capabilities.",
+    image: "/images/snacks-production.jpg",
+    date: "Production",
+    comments: "Food Manufacturing",
   },
   {
     id: 9,
-    title: "Wholesale Trade",
-    description:
-      "Non-specialized wholesale trade consulting and distribution network optimization.",
-    image: "/images/service1.jpg?height=300&width=400",
-    date: "Trade",
-    comments: "Networks",
+    title: "Delivery Services",
+    description: "Comprehensive delivery services within Rwanda and international shipping for efficient logistics and supply chain management.",
+    image: "/images/delivery.jpg",
+    date: "Logistics",
+    comments: "Delivery Solutions",
   },
   {
     id: 10,
-    title: "Airtime Service Retail",
-    description:
-      "Retail service consulting for airtime and telecommunications service distribution.",
-    image: "/images/service1.jpg?height=300&width=400",
-    date: "Telecom",
-    comments: "Services",
+    title: "Beauty and Personal Care Services",
+    description: "Professional beauty services and personal care products including salon treatments, skincare, and wellness programs.",
+    image: "/images/beauty.jpg",
+    date: "Beauty",
+    comments: "Personal Care",
   },
   {
     id: 11,
-    title: "Cargo Handling",
-    description:
-      "Professional logistics and cargo handling consulting for efficient operations.",
-    image: "/images/service1.jpg?height=300&width=400",
-    date: "Logistics",
-    comments: "Solutions",
-  },
-  {
-    id: 12,
-    title: "Technical Testing & Analysis",
-    description:
-      "Comprehensive technical testing and analysis services for quality assurance.",
-    image: "/images/service9.jpg?height=300&width=400",
-    date: "Quality",
-    comments: "Testing",
-  },
-  {
-    id: 13,
-    title: "Tax consultation, Product, Pricing Strategy",
-    description:
-      "Tax advisory, product maketing, and pricing strategy with industries",
-    image: "/images/service3.jpg?height=300&width=400",
-    date: "Quality",
-    comments: "Testing",
-  },
-    {
-    id: 14,
-    title: "Chemical Manufacturing",
-    description:
-      "Professional consulting for basic chemicals manufacturing and production optimization.",
-    image: "/images/service6.jpg?height=300&width=400",
-    date: "Quality",
-    comments: "Assured",
+    title: "Snack Production Service",
+    description: "Specialized snack production service with custom formulations, packaging, and quality assurance for various markets.",
+    image: "/images/snacks-production-service.jpg",
+    date: "Production",
+    comments: "Custom Snacks",
   },
 ];
 
@@ -142,28 +103,29 @@ export default function ServicesSection() {
           {services.map((service) => (
             <div
               key={service.id}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 group"
             >
+              <div className="w-2 h-2 bg-blue-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <div className="flex">
                 <div className="relative w-2/5 h-48">
                   <img
-                    src={service.image || "/images/vertex-conslting.jpg"}
+                    src={service.image || "/images/eduquality-service.jpg"}
                     alt={service.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute top-3 left-3 bg-[#0066FF]/90 text-white rounded-lg px-2 py-1 backdrop-blur-sm">
+                  <div className="absolute top-3 left-3 bg-blue-600/90 text-white rounded-lg px-2 py-1 backdrop-blur-sm">
                     <div className="text-lg font-bold leading-none">
                       {service.id.toString().padStart(2, "0")}
                     </div>
                     <div className="text-xs opacity-90">{service.date}</div>
                   </div>
                 </div>
-                <div className="w-3/5 p-4 flex flex-col justify-between bg-[#E1EBE2]">
+                <div className="w-3/5 p-4 flex flex-col justify-between bg-gradient-to-br from-blue-50 to-indigo-50">
                   <div>
                     <h3 className="text-[16px] font-bold text-gray-900 mb-2 leading-tight">
                       {service.title}
                     </h3>
-                    <p className="text-gray-600 text-[14px] leading-relaxed mb-3">
+                    <p className="text-gray-800 font-medium text-sm group-hover:text-blue-600 transition-colors duration-300">
                       {service.description}
                     </p>
                   </div>
@@ -174,7 +136,7 @@ export default function ServicesSection() {
                     </div>
                     <div>
                       <Link href={"/contact/#contact-form"}>
-                        <Send className="w-4 h-4 text-[#F17105] cursor-pointer" />
+                        <Send className="w-4 h-4 text-blue-600 cursor-pointer" />
                       </Link>
                     </div>
                   </div>

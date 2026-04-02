@@ -37,7 +37,7 @@ export default function LoginForm({ isAdmin = false }: LoginFormProps) {
               id="email"
               name="email"
               type="email"
-              placeholder={isAdmin ? "admin@vertexconsulting.com" : "Enter your email"}
+              placeholder={isAdmin ? "admin@eduquality.com" : "Enter your email"}
               required
               disabled={isPending}
               className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-100"

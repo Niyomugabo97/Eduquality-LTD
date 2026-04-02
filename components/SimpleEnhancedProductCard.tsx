@@ -6,8 +6,10 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MapPin, Eye, Edit, Trash2 } from "lucide-react";
+import { MapPin, Eye, Edit, Trash2, ShoppingBag, MessageCircle, Phone } from "lucide-react";
 import { deleteProduct } from "@/app/actions/product";
+import { useCart } from "@/contexts/CartContext";
+import ProductChat from "@/components/ProductChat";
 
 interface Product {
   id: string;
@@ -22,6 +24,7 @@ interface Product {
   village?: string | null;
   createdAt: string | Date;
   distance?: number;
+  phone?: string | null; // Add phone field
   user: {
     id: string;
     name: string;
@@ -29,16 +32,12 @@ interface Product {
   };
   media?: {
     images: string[];
-    videos: string[];
     mainImage?: string | null | undefined;
-    mainVideo?: string | null | undefined;
   } | null | undefined;
   // Legacy fields for backward compatibility
   image?: string;
   images?: string[];
   mainImage?: string;
-  videos?: string[];
-  mainVideo?: string;
 }
 
 interface SimpleEnhancedProductCardProps {
@@ -48,8 +47,18 @@ interface SimpleEnhancedProductCardProps {
 }
 
 export default function SimpleEnhancedProductCard({ product, currentUser, isAdmin = false }: SimpleEnhancedProductCardProps) {
+  const { addToCart } = useCart();
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentUserName, setCurrentUserName] = useState<string>("");
+  const [showChat, setShowChat] = useState(false);
+
+  const handleAddToCart = () => {
+    if (product.price) {
+      addToCart(product);
+    }
+  };
 
   const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
     const R = 6371; // Earth's radius in km
@@ -93,12 +102,27 @@ export default function SimpleEnhancedProductCard({ product, currentUser, isAdmi
     } else {
       console.log("Geolocation not available in this browser/environment");
     }
+
+    // Fetch current user
+    const fetchCurrentUser = async () => {
+      try {
+        const response = await fetch("/api/user/me");
+        const data = await response.json();
+        if (data.success) {
+          setCurrentUserId(data.data.id);
+          setCurrentUserName(data.data.name);
+        }
+      } catch (err) {
+        console.log("User not logged in");
+      }
+    };
+
+    fetchCurrentUser();
   }, []);
 
-  const formatPrice = (price?: number | null) => {
-    if (price == null) return "Price not set";
-    // Use a simple manual formatter to avoid hydration issues
-    return `RWF ${price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
+  const formatPrice = (price: number | null | undefined) => {
+    if (!price) return 'Price not available';
+    return `FRW ${price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
   };
 
   const formatDate = (dateString: string | Date) => {
@@ -115,25 +139,116 @@ export default function SimpleEnhancedProductCard({ product, currentUser, isAdmi
     ? calculateDistance(userLocation.lat, userLocation.lng, product.latitude, product.longitude)
     : undefined;
 
+  // Debug logging for image sources
+  useEffect(() => {
+    console.log('Product Debug - Image sources:', {
+      productId: product.id,
+      mediaMainImage: product.media?.mainImage,
+      mediaImages: product.media?.images,
+      legacyImage: product.image,
+      legacyMainImage: product.mainImage,
+      legacyImages: product.images
+    });
+  }, [product]);
+
+  const handleImageClick = (imageSrc: string | undefined) => {
+    if (imageSrc) {
+      window.open(imageSrc, '_blank');
+    }
+  };
+
   return (
     <Card className="group hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 hover:border-orange-200">
       <CardContent className="p-0">
         {/* Product Image */}
-        <div className="relative h-48 w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-          {product.media?.mainImage ? (
-            <Image src={product.media.mainImage} alt={product.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-          ) : product.media?.images?.length ? (
-            <Image src={product.media.images[0]} alt={product.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-          ) : product.image || product.mainImage || product.images?.length ? (
-            <Image src={product.image ?? product.mainImage ?? product.images![0]!} alt={product.title} fill className="object-cover group-hover:scale-105 transition-transform duration-300" />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              <div className="text-gray-400 text-center p-4">
-                <div className="text-3xl mb-2">📦</div>
-                <div className="text-sm">No Image Available</div>
+        <div className="relative h-64 w-full overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
+          {/* Try to get the best image URL from multiple possible sources */}
+          {(() => {
+            // Handle Cloudinary URLs (new schema)
+            if (product.media?.mainImage) {
+              return (
+                <Image 
+                  src={product.media.mainImage} 
+                  alt={product.title} 
+                  fill 
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                  onClick={() => handleImageClick(product.media?.mainImage || undefined)}
+                />
+              );
+            }
+            
+            // Handle Cloudinary images array
+            if (product.media?.images && product.media.images.length > 0) {
+              const firstImage = product.media.images[0];
+              return (
+                <Image 
+                  src={firstImage} 
+                  alt={product.title} 
+                  fill 
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                  onClick={() => handleImageClick(firstImage)}
+                />
+              );
+            }
+            
+            // Handle legacy fields
+            if (product.image) {
+              return (
+                <Image 
+                  src={product.image} 
+                  alt={product.title} 
+                  fill 
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                  onClick={() => handleImageClick(product.image)}
+                />
+              );
+            }
+            
+            if (product.mainImage) {
+              return (
+                <Image 
+                  src={product.mainImage} 
+                  alt={product.title} 
+                  fill 
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                  onClick={() => handleImageClick(product.mainImage)}
+                />
+              );
+            }
+            
+            if (product.images && product.images.length > 0) {
+              const firstImage = product.images[0];
+              return (
+                <Image 
+                  src={firstImage} 
+                  alt={product.title} 
+                  fill 
+                  className="object-cover group-hover:scale-105 transition-transform duration-300 cursor-pointer"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  priority
+                  onClick={() => handleImageClick(firstImage)}
+                />
+              );
+            }
+            
+            // Fallback to placeholder
+            return (
+              <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                <div className="text-gray-400 text-center p-4">
+                  <div className="text-3xl mb-2">📦</div>
+                  <div className="text-sm">No Image Available</div>
+                </div>
               </div>
-            </div>
-          )}
+            );
+          })()}
         </div>
 
         {/* Product Info */}
@@ -204,26 +319,74 @@ export default function SimpleEnhancedProductCard({ product, currentUser, isAdmi
                 <Eye className="h-4 w-4 mr-2" /> View Details
               </Button>
             </Link>
-
-            {(currentUser && (product.user.id === currentUser.id || isAdmin)) && (
-              <div className="flex gap-2">
-                <Link href={`/user/edit-product?id=${product.id}`}>
-                  <Button variant="outline" size="sm"><Edit className="h-4 w-4 mr-2" /> Edit</Button>
-                </Link>
-                <Button 
-                  variant="destructive" 
-                  size="sm"
-                  onClick={() => handleDelete(product.id)}
-                  disabled={deleting === product.id}
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  {deleting === product.id ? "Deleting..." : "Delete"}
-                </Button>
-              </div>
+            
+            {product.price && (
+              <Button 
+                onClick={handleAddToCart}
+                size="sm" 
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+              >
+                <ShoppingBag className="h-4 w-4 mr-2" /> Add to Cart
+              </Button>
             )}
           </div>
+
+          {/* Chat and Contact Buttons */}
+          <div className="flex gap-2 mt-2">
+            {/* Chat Button */}
+            {currentUserId && currentUserId !== product.user.id && (
+              <Button 
+                onClick={() => setShowChat(true)}
+                size="sm" 
+                className="flex-1 bg-[#F17105] hover:bg-[#d96504] text-white"
+              >
+                <MessageCircle className="h-4 w-4 mr-2" /> Chat with Seller
+              </Button>
+            )}
+            
+            {/* Phone Button - if phone number is available */}
+            {product.phone && (
+              <Button 
+                onClick={() => window.open(`tel:${product.phone}`, '_blank')}
+                size="sm" 
+                variant="outline"
+                className="flex-1"
+              >
+                <Phone className="h-4 w-4 mr-2" /> Call
+              </Button>
+            )}
+          </div>
+
+          {(currentUser && (product.user.id === currentUser.id || isAdmin)) && (
+            <div className="flex gap-2">
+              <Link href={`/user/edit-product?id=${product.id}`}>
+                <Button variant="outline" size="sm"><Edit className="h-4 w-4 mr-2" /> Edit</Button>
+              </Link>
+              <Button 
+                variant="destructive" 
+                size="sm"
+                onClick={() => handleDelete(product.id)}
+                disabled={deleting === product.id}
+              >
+                <Trash2 className="h-4 w-4 mr-2" />
+                {deleting === product.id ? "Deleting..." : "Delete"}
+              </Button>
+            </div>
+          )}
         </div>
       </CardContent>
+
+      {/* Chat Component */}
+      {showChat && currentUserId && product && currentUserId !== product.user.id && (
+        <ProductChat
+          productId={product.id}
+          productTitle={product.title}
+          sellerId={product.user.id}
+          sellerName={product.user.name}
+          currentUserId={currentUserId}
+          currentUserName={currentUserName}
+        />
+      )}
     </Card>
   );
 }

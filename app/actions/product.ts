@@ -1,7 +1,7 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
 export async function createProduct(prevState: any, formData: FormData) {
@@ -9,7 +9,7 @@ export async function createProduct(prevState: any, formData: FormData) {
   const description = formData.get("description") as string;
   const price = formData.get("price") as string;
   const imageFiles = formData.getAll("image") as File[];
-  const videoFiles = formData.getAll("video") as File[];
+  // Remove video files - no longer needed
   const latitude = formData.get("latitude") as string;
   const longitude = formData.get("longitude") as string;
   const available = formData.get("available") as string; // Get availability from form
@@ -75,37 +75,7 @@ export async function createProduct(prevState: any, formData: FormData) {
       images.push(`data:${file.type};base64,${imageBase64}`);
     }
 
-    // Process videos
-    const videos: string[] = [];
-    const allowedVideoTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-    
-    for (const file of videoFiles) {
-      if (!allowedVideoTypes.includes(file.type)) {
-        return { success: false, message: "Invalid video file type. Please upload MP4, WebM, or OGG." };
-      }
-      
-      if (file.size > 10 * 1024 * 1024) {
-        return { success: false, message: "Video size too large. Please upload videos smaller than 10MB." };
-      }
-
-      let buffer: ArrayBuffer;
-      try {
-        buffer = await file.arrayBuffer();
-      } catch (error) {
-        console.error("Error reading video file:", error);
-        return { success: false, message: "Failed to read video file. Please try again." };
-      }
-      
-      let videoBase64: string;
-      try {
-        videoBase64 = Buffer.from(buffer).toString("base64");
-      } catch (error) {
-        console.error("Error converting video to base64:", error);
-        return { success: false, message: "Failed to process video. Please try a different video." };
-      }
-      
-      videos.push(`data:${file.type};base64,${videoBase64}`);
-    }
+    // Remove video processing - no longer needed
 
     // Parse latitude and longitude if provided
     const parsedLatitude = latitude ? parseFloat(latitude) : null;
@@ -124,7 +94,6 @@ export async function createProduct(prevState: any, formData: FormData) {
       title,
       description,
       images,
-      videos,
       userId: user.id,
       available: available !== "false", // Convert to boolean, default to true
     };
@@ -150,12 +119,9 @@ export async function createProduct(prevState: any, formData: FormData) {
     console.log("WhatsApp Number in data:", productData.whatsappNumber);
     console.log("==============================");
 
-    // Set main image and video
+    // Set main image only (no videos)
     if (images.length > 0) {
       productData.mainImage = images[0]; // First image as main
-    }
-    if (videos.length > 0) {
-      productData.mainVideo = videos[0]; // First video as main
     }
 
     const product = await prisma.product.create({
@@ -195,30 +161,16 @@ export async function getUserProducts() {
       ],
     });
 
-    // Fetch media for each product
-    const productsWithMedia = await Promise.all(
-      products.map(async (product) => {
-        let mediaData = null;
-        try {
-          mediaData = await (prisma as any).productMedia.findFirst({
-            where: { productId: product.id },
-          });
-        } catch (error) {
-          // ProductMedia collection might not exist yet
-          console.log("ProductMedia collection not found for product:", product.id);
-        }
-
-        return {
-          ...product,
-          media: mediaData ? {
-            images: mediaData.images,
-            videos: mediaData.videos,
-            mainImage: mediaData.mainImage,
-            mainVideo: mediaData.mainVideo,
-          } : null,
-        };
-      })
-    );
+    // Transform products to include Cloudinary media structure
+    const productsWithMedia = products.map((product) => {
+      return {
+        ...product,
+        media: {
+          images: product.images || [],
+          mainImage: product.mainImage || null,
+        },
+      };
+    });
 
     return productsWithMedia;
   } catch (error) {
@@ -293,9 +245,7 @@ interface Product {
   };
   media?: {
     images: string[];
-    videos: string[];
     mainImage: string | null;
-    mainVideo: string | null;
   };
 }
 
@@ -330,29 +280,16 @@ export async function getAllPublishedProducts(): Promise<any[]> {
 
     console.log("Visible products after filtering:", visibleProducts.length);
 
-    // Fetch media for each product from ProductMedia collection
-    const productsWithMedia = await Promise.all(
-      visibleProducts.map(async (product: any) => {
-        let mediaData = null;
-        try {
-          mediaData = await (prisma as any).productMedia.findFirst({
-            where: { productId: product.id },
-          });
-        } catch (error) {
-          console.log("ProductMedia not found for product:", product.id);
-        }
-
-        return {
-          ...product,
-          media: mediaData ? {
-            images: mediaData.images,
-            videos: mediaData.videos,
-            mainImage: mediaData.mainImage,
-            mainVideo: mediaData.mainVideo,
-          } : null,
-        };
-      })
-    );
+    // Transform products to include Cloudinary media structure
+    const productsWithMedia = visibleProducts.map((product: any) => {
+      return {
+        ...product,
+        media: {
+          images: product.images || [],
+          mainImage: product.mainImage || null,
+        },
+      };
+    });
 
     return productsWithMedia;
   } catch (error: any) {
@@ -360,6 +297,9 @@ export async function getAllPublishedProducts(): Promise<any[]> {
     // Fallback to standard query without filtering if there's an error
     try {
       const products = await prisma.product.findMany({
+        where: {
+          hidden: false // Only fetch visible products
+        },
         include: {
           user: {
             select: {
@@ -374,7 +314,15 @@ export async function getAllPublishedProducts(): Promise<any[]> {
           { createdAt: "desc" }
         ],
       });
-      return products;
+      
+      // Transform fallback products to include Cloudinary media structure
+      return products.map((product: any) => ({
+        ...product,
+        media: {
+          images: product.images || [],
+          mainImage: product.mainImage || null,
+        },
+      }));
     } catch (fallbackError: any) {
       console.error("Fallback query also failed:", fallbackError);
       return [];

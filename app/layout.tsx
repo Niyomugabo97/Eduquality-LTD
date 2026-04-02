@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { CartProvider } from "@/contexts/CartContext";
+import Cart from "@/components/Cart";
 
 export const metadata: Metadata = {
-  title: "VERTEX CONSULTING LTD",
-  description: "VERTEX CONSULTING",
-  generator: "VERTEX CONSULTING LTD.dev",
+  title: "MY EDUQUALITY PARTNER LTD",
+  description: "Multi-service company providing educational support, business services, beauty care, delivery solutions, and charitable activities",
+  generator: "MY EDUQUALITY PARTNER LTD",
 };
 
 export default function RootLayout({
@@ -14,7 +16,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <CartProvider>
+          {children}
+          <Cart />
+        </CartProvider>
+      </body>
     </html>
   );
 }

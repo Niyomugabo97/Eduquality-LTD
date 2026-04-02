@@ -48,6 +48,10 @@ model User {
   phone      String?  // Optional phone number for WhatsApp contact
   password  String
   products  Product[]
+  // Chat relations
+  customerChats Chat[] @relation(name: "CustomerChats")
+  sellerChats   Chat[] @relation(name: "SellerChats")
+  chatMessages  ChatMessage[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -58,6 +62,7 @@ model Product {
   user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title         String
   description    String
+  category      ProductCategory @default(BEAUTY_PERSONAL_CARE)
   price         Float?   // Optional price field
   latitude      Float?   // Optional latitude for location
   longitude     Float?   // Optional longitude for location
@@ -69,25 +74,23 @@ model Product {
   hidden        Boolean  @default(false) // Admin can hide products from public view
   contactNumber String?  // Optional contact number for this product
   whatsappNumber String?  // Optional WhatsApp number for this product
-  media         ProductMedia[]
+  
+  // Cloudinary image storage fields
+  images        String[] // Array of Cloudinary URLs
+  imageNames    String[] // Array of original image filenames
+  imageTypes    String[] // Array of image MIME types
+  mainImage     String?  // URL of main image
+  mainImageIndex Int?     // Index of main image in images array
+  
+  // Chat relation
+  chats         Chat[]
+  
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
-model ProductMedia {
-  id          String   @id @default(auto()) @map("_id") @db.ObjectId
-  productId    String   @db.ObjectId
-  product      Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  images       String[] // Array of Cloudinary URLs
-  videos       String[] // Array of Cloudinary URLs
-  mainImage    String? // Primary image URL
-  mainVideo    String? // Primary video URL
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-}
-
 model Contact {
-  id        String       @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   name      String
   email     String
   phone     String?
@@ -102,8 +105,132 @@ model Team {
   name      String
   position  String
   image     String   // base64 encoded image
+  email     String?  // Optional email for contact
+  phone     String?  // Optional phone for contact
   order     Int      @default(0) // for ordering team members
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderNumber  String   @unique // Unique order identifier
+  customerId   String   // User who placed the order
+  customerName String   // Customer's name
+  customerEmail String   // Customer's email
+  customerPhone String?  // Optional customer phone
+  serviceType  String   // Type of service ordered
+  description  String   // Order description
+  quantity     Int?     // Quantity if applicable
+  price        Float?    // Order price
+  status       OrderStatus @default(PENDING) // Order status
+  priority     OrderPriority @default(NORMAL) // Order priority
+  deliveryAddress String?  // Delivery address
+  notes        String?  // Additional notes
+  assignedTo   String?  // Staff member assigned
+  estimatedDelivery DateTime? // Estimated delivery date
+  actualDelivery   DateTime? // Actual delivery date
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  messages     Message[]
+  feedback     Feedback?
+
+  @@map("orders")
+}
+
+model Message {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId    String   // Related order
+  senderId   String   // Who sent the message
+  senderType SenderType @default(CUSTOMER) // CUSTOMER or STAFF
+  content    String   // Message content
+  isRead     Boolean  @default(false) // Read status
+  createdAt  DateTime @default(now())
+
+  // Relations
+  order      Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("messages")
+}
+
+model Feedback {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId     String   @unique // Related order
+  customerId   String   // Customer who gave feedback
+  rating       Int      // Rating 1-5
+  comment      String?  // Feedback comment
+  serviceQuality Int?     // Service quality rating
+  deliverySpeed  Int?     // Delivery speed rating
+  staffProfessionalism Int? // Staff professionalism rating
+  wouldRecommend Boolean? @default(false) // Would recommend
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  order       Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("feedback")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  READY_FOR_DELIVERY
+  DELIVERED
+  CANCELLED
+  REFUNDED
+}
+
+enum OrderPriority {
+  LOW
+  NORMAL
+  HIGH
+  URGENT
+}
+
+enum SenderType {
+  CUSTOMER
+  STAFF
+}
+
+enum ProductCategory {
+  BEAUTY_PERSONAL_CARE
+  WHOLESALE_SCHOOL_MATERIALS
+  SNACK_PRODUCTION
+  MANUFACTURING_TOOLS
+}
+
+// Chat system for product inquiries
+model Chat {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  productId   String   @db.ObjectId
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  customerId  String   @db.ObjectId // User who initiated the chat (buyer)
+  customer    User     @relation(name: "CustomerChats", fields: [customerId], references: [id], onDelete: Cascade)
+  sellerId    String   @db.ObjectId // Product owner (seller)
+  seller      User     @relation(name: "SellerChats", fields: [sellerId], references: [id], onDelete: Cascade)
+  messages    ChatMessage[]
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("chats")
+}
+
+model ChatMessage {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  chatId      String   @db.ObjectId
+  chat        Chat     @relation(fields: [chatId], references: [id], onDelete: Cascade)
+  senderId    String   @db.ObjectId // Who sent the message
+  sender      User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  content     String   // Message content
+  isRead      Boolean  @default(false)
+  readAt      DateTime? // When the message was read
+  createdAt   DateTime @default(now())
+
+  @@map("chat_messages")
 }
 

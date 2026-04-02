@@ -14,23 +14,26 @@ import { useActionState } from "react";
 import { registerInterest } from "@/app/actions/register"; // Import the new Server Action
 
 const services = [
-  "Accounting ",
-  "Auditing",
-  "Project Management",
-  "Business Strategy Development",
-  "Chemical Manufacturing",
-  "Fertilizers & Nitrogen Compounds",
-  "Pesticides & Agrochemicals",
-  "Paints & Coatings",
-  "Soap & Detergents",
-  "Global Trading Services",
-  "Wholesale Trade",
-  "Airtime Service Retail",
-  "Cargo Handling",
-  "Technical Testing & Analysis",
-  "Tax consultation",
-  "Product Pricing Strategy",
-  "Customer Management",
+  {
+    name: "NIBEZA LOIM SALON",
+    image: "/images/salon.jpeg",
+    description: "Professional beauty and personal care services including hair styling, skincare, and makeup treatments."
+  },
+  {
+    name: "NIBEZA LOIM SNACKS",
+    image: "/images/akaryoshye-snacks.jpeg",
+    description: "Quality snack production and manufacturing with custom formulations and distribution services."
+  },
+  {
+    name: "NIBEZA LOIM DELIVERY",
+    image: "/images/delivery.jpg",
+    description: "Fast and reliable delivery services within Rwanda and international shipping solutions."
+  },
+  {
+    name: "OTHER PROFESSIONAL SERVICES",
+    image: "/images/professional.jpg",
+    description: "Comprehensive professional services including consulting, HR management, and business solutions."
+  },
 ];
 
 export default function HomeServices() {
@@ -117,7 +120,7 @@ export default function HomeServices() {
         >
           <h2
             key={`title-${animationKey}`}
-            className={`text-2xl md:text-3xl font-bold text-[#0066FF] mb-4 transition-all duration-800 ${
+            className={`text-2xl md:text-3xl font-bold text-blue-600 mb-4 transition-all duration-800 ${
               isVisible
                 ? "animate-fadeInUp animation-delay-200"
                 : "opacity-0 translate-y-[30px]"
@@ -133,7 +136,7 @@ export default function HomeServices() {
                 : "opacity-0 translate-y-[30px]"
             }`}
           >
-            Comprehensive consulting solutions tailored to your business needs
+            Comprehensive multi-service solutions for education, business, beauty, delivery, and community support
           </p>
         </div>
 
@@ -156,12 +159,26 @@ export default function HomeServices() {
               {/* Services Grid - Flex Grow */}
               <div className="grid grid-cols-1 gap-4 flex-grow mb-6">
                 {services.map((service, index) => (
-                  <div className="flex items-center gap-3 group" key={index}>
-                    <CircleCheckBig className="w-5 h-5 text-[#0066FF] flex-shrink-0" />
-                    <h4 className="text-gray-800 font-medium text-sm group-hover:text-[#F17105] transition-colors duration-300">
-                      {service}
-                    </h4>
-                    <div className="w-2 h-2 bg-[#F17105] rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                  <div className="flex items-start gap-4 group p-4 rounded-xl hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 border border-gray-200 hover:border-blue-300 hover:shadow-lg" key={index}>
+                    <div className="relative flex-shrink-0">
+                      <img
+                        src={service.image}
+                        alt={service.name}
+                        className="w-16 h-16 object-cover rounded-xl shadow-md group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.src = '/images/placeholder.svg';
+                        }}
+                      />
+                      <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="text-gray-800 font-semibold text-base group-hover:text-blue-600 transition-colors duration-300 mb-2">
+                        {service.name}
+                      </h4>
+                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                        {service.description}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -176,7 +193,7 @@ export default function HomeServices() {
                 }`}
               >
                 <Link href="/services">
-                  <Button className="bg-[#F17105] hover:bg-[#F17105]/90 text-white px-8 py-3 rounded-lg font-semibold text-base hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                  <Button className="bg-blue-600 hover:bg-blue-500 text-white px-8 py-3 rounded-lg font-semibold text-base hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
                     View All Services Details
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </Button>
@@ -199,8 +216,8 @@ export default function HomeServices() {
                 Register Your Interest
               </h3>
               <p className="text-gray-600 text-sm mb-8">
-                Fill out the form below to get started with our consulting
-                services. We will contact you shortly.
+                Fill out the form below to get started with our services. 
+                We will contact you shortly.
               </p>
 
               <form action={formAction} className="space-y-5">
@@ -211,7 +228,7 @@ export default function HomeServices() {
                     placeholder="Company/User Name *"
                     required
                     disabled={isPending}
-                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-200"
+                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
                   />
                   {state.errors?.companyName && (
                     <p className="text-red-500 text-sm mt-1">
@@ -227,7 +244,7 @@ export default function HomeServices() {
                     placeholder="Email Address *"
                     required
                     disabled={isPending}
-                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-200"
+                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
                   />
                   {state.errors?.email && (
                     <p className="text-red-500 text-sm mt-1">
@@ -243,7 +260,7 @@ export default function HomeServices() {
                     placeholder="TIN Number *"
                     required
                     disabled={isPending}
-                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-200"
+                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
                   />
                   {state.errors?.tinNumber && (
                     <p className="text-red-500 text-sm mt-1">
@@ -259,7 +276,7 @@ export default function HomeServices() {
                     placeholder="Phone Number *"
                     required
                     disabled={isPending}
-                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-200"
+                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
                   />
                   {state.errors?.phoneNumber && (
                     <p className="text-red-500 text-sm mt-1">
@@ -275,7 +292,7 @@ export default function HomeServices() {
                     placeholder="Location *"
                     required
                     disabled={isPending}
-                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-200"
+                    className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all duration-200"
                   />
                   {state.errors?.location && (
                     <p className="text-red-500 text-sm mt-1">
@@ -290,22 +307,22 @@ export default function HomeServices() {
                     Select Services You Need *
                   </label>
                   <div className="max-h-48 overflow-y-auto border border-gray-300 rounded-lg p-4 bg-white shadow-inner">
-                    {services.map((service) => (
+                    {services.map((service, index) => (
                       <label
-                        key={service}
+                        key={index}
                         className="flex items-center space-x-3 mb-3 cursor-pointer"
                       >
                         <input
                           type="checkbox"
                           name="selectedServices" // Important for FormData
-                          value={service} // Important for FormData
-                          checked={selectedServicesState.includes(service)}
-                          onChange={() => handleServiceToggle(service)}
+                          value={service.name} // Important for FormData
+                          checked={selectedServicesState.includes(service.name)}
+                          onChange={() => handleServiceToggle(service.name)}
                           disabled={isPending}
-                          className="w-5 h-5 text-[#F17105] border-gray-300 rounded focus:ring-[#F17105] accent-[#F17105]"
+                          className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-600 accent-blue-600"
                         />
                         <span className="text-base text-gray-800">
-                          {service}
+                          {service.name}
                         </span>
                       </label>
                     ))}
@@ -338,7 +355,7 @@ export default function HomeServices() {
                 <Button
                   type="submit"
                   disabled={isPending || selectedServicesState.length === 0}
-                  className="w-full bg-[#F17105] hover:bg-[#F17105]/90 text-white font-semibold rounded-lg py-3 text-lg hover:scale-[1.01] transition-all duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  className="w-full bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-lg py-3 text-lg hover:scale-[1.01] transition-all duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                 >
                   {isPending ? (
                     <div className="flex items-center space-x-2">

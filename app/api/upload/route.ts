@@ -1,21 +1,30 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
 import { cookies } from "next/headers";
-import { prisma } from "@/lib/prisma";
-import { uploadToCloudinary } from "@/lib/cloudinary";
+import { uploadImageToCloudinary } from "@/lib/cloudinary";
 
-export async function POST(request: NextRequest) {
+export async function POST(request: Request) {
   try {
+    console.log('=== Cloudinary Upload Request Started ===');
+    
     const formData = await request.formData();
     
-    // Check if the request is too large
-    const contentLength = request.headers.get('content-length');
-    if (contentLength && parseInt(contentLength) > 50 * 1024 * 1024) {
-      return NextResponse.json({ 
-        success: false, 
-        message: "File size too large. Maximum size is 50MB." 
-      }, { status: 413 });
-    }
+    // Get form fields
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const category = formData.get("category") as string;
+    const price = formData.get("price") ? parseFloat(formData.get("price") as string) : undefined;
+    const latitude = formData.get("latitude") ? parseFloat(formData.get("latitude") as string) : undefined;
+    const longitude = formData.get("longitude") ? parseFloat(formData.get("longitude") as string) : undefined;
+    const province = formData.get("province") as string;
+    const district = formData.get("district") as string;
+    const sector = formData.get("sector") as string;
+    const village = formData.get("village") as string;
+    const available = formData.get("available") as string;
+    const contactNumber = formData.get("contactNumber") as string;
+    const whatsappNumber = formData.get("whatsappNumber") as string;
 
+    // Get user session
     const cookieStore = await cookies();
     const sessionToken = cookieStore.get("user_session")?.value;
 
@@ -25,151 +34,107 @@ export async function POST(request: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: { id: sessionToken },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+      },
     });
 
     if (!user) {
-      return NextResponse.json({ success: false, message: "User not found. Please login again." }, { status: 401 });
+      return NextResponse.json({ success: false, message: "User not found." }, { status: 404 });
     }
 
-    // Extract form data
-    const title = formData.get("title") as string;
-    const description = formData.get("description") as string;
-    const price = formData.get("price") as string;
-    const latitude = formData.get("latitude") as string;
-    const longitude = formData.get("longitude") as string;
-    const province = formData.get("province") as string;
-    const district = formData.get("district") as string;
-    const sector = formData.get("sector") as string;
-    const village = formData.get("village") as string;
-    const available = formData.get("available") as string;
-    const contactNumber = formData.get("contactNumber") as string;
-    const whatsappNumber = formData.get("whatsappNumber") as string;
-
-    if (!title || !description) {
-      return NextResponse.json({ success: false, message: "Title and description are required." }, { status: 400 });
-    }
+    // Clean userId to remove any invalid characters
+    const cleanUserId = sessionToken.replace(/[^a-zA-Z0-9]/g, '');
+    
+    console.log('=== User Auth Debug ===');
+    console.log('Session token:', sessionToken);
+    console.log('Cleaned userId:', cleanUserId);
 
     // Get files
     const imageFiles = formData.getAll("image") as File[];
-    const videoFiles = formData.getAll("video") as File[];
+
+    console.log('=== Cloudinary Upload Debug ===');
+    console.log('Image files count:', imageFiles.length);
+    console.log('Image files:', imageFiles.map(f => ({ name: f.name, size: f.size, type: f.type })));
 
     if (imageFiles.length === 0) {
       return NextResponse.json({ success: false, message: "At least one image is required." }, { status: 400 });
     }
 
-    // Upload files to Cloudinary
-    const savedImages: string[] = [];
-    const savedVideos: string[] = [];
+    // Upload images to Cloudinary
+    const imageUrls: string[] = [];
+    const imageNames: string[] = [];
+    const imageTypes: string[] = [];
 
-    // Upload images
+    console.log('=== Processing Images for Cloudinary ===');
+    
     for (const file of imageFiles) {
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-      if (!allowedTypes.includes(file.type)) {
-        return NextResponse.json({ success: false, message: "Invalid image file type." }, { status: 400 });
-      }
-      
-      if (file.size > 5 * 1024 * 1024) {
-        return NextResponse.json({ success: false, message: "Image size too large. Maximum 5MB per image." }, { status: 400 });
-      }
-
       try {
-        const result: any = await uploadToCloudinary(file, 'products/images');
-        savedImages.push(result.url);
+        console.log(`Uploading image: ${file.name}`);
+        
+        // Upload to Cloudinary
+        const imageUrl = await uploadImageToCloudinary(file);
+        
+        imageUrls.push(imageUrl);
+        imageNames.push(file.name);
+        imageTypes.push(file.type);
+        
+        console.log(`✅ Uploaded: ${file.name} -> ${imageUrl}`);
       } catch (error) {
-        console.error("Image upload error:", error);
-        return NextResponse.json({ success: false, message: "Failed to upload image to cloud." }, { status: 500 });
+        console.error(`❌ Failed to upload ${file.name}:`, error);
+        return NextResponse.json({ 
+          success: false, 
+          message: `Failed to upload image: ${file.name}` 
+        }, { status: 500 });
       }
     }
 
-    // Upload videos
-    for (const file of videoFiles) {
-      const allowedTypes = ['video/mp4', 'video/webm', 'video/ogg'];
-      if (!allowedTypes.includes(file.type)) {
-        return NextResponse.json({ success: false, message: "Invalid video file type." }, { status: 400 });
-      }
-      
-      if (file.size > 10 * 1024 * 1024) {
-        return NextResponse.json({ success: false, message: "Video size too large. Maximum 10MB per video." }, { status: 400 });
-      }
-
-      try {
-        const result: any = await uploadToCloudinary(file, 'products/videos');
-        savedVideos.push(result.url);
-      } catch (error) {
-        console.error("Video upload error:", error);
-        return NextResponse.json({ success: false, message: "Failed to upload video to cloud." }, { status: 500 });
-      }
-    }
-
-    // Parse coordinates
-    const parsedLatitude = latitude ? parseFloat(latitude) : null;
-    const parsedLongitude = longitude ? parseFloat(longitude) : null;
-
-    // Validate coordinates
-    if (latitude && (isNaN(parsedLatitude!) || parsedLatitude! < -90 || parsedLatitude! > 90)) {
-      return NextResponse.json({ success: false, message: "Invalid latitude. Must be between -90 and 90." }, { status: 400 });
-    }
-    if (longitude && (isNaN(parsedLongitude!) || parsedLongitude! < -180 || parsedLongitude! > 180)) {
-      return NextResponse.json({ success: false, message: "Invalid longitude. Must be between -180 and 180." }, { status: 400 });
-    }
-
-    // Create product with metadata only (no media URLs in database)
+    // Create product with Cloudinary URLs
     const productData: any = {
       title,
       description,
-      userId: user.id,
+      category,
+      price,
+      latitude,
+      longitude,
+      province,
+      district,
+      sector,
+      village,
       available: available !== "false", // Convert to boolean, default to true
+      contactNumber,
+      whatsappNumber,
+      user: {
+        connect: { id: cleanUserId }
+      },
+      // Store Cloudinary URLs directly in the product
+      images: imageUrls,
+      imageNames,
+      imageTypes,
+      mainImage: imageUrls.length > 0 ? imageUrls[0] : null,
+      mainImageIndex: 0,
     };
 
-    // Add optional fields
-    if (price) {
-      productData.price = parseFloat(price);
-    }
-    if (parsedLatitude !== null && parsedLongitude !== null) {
-      productData.latitude = parsedLatitude;
-      productData.longitude = parsedLongitude;
-    }
-    if (province) {
-      productData.province = province;
-    }
-    if (district) {
-      productData.district = district;
-    }
-    if (sector) {
-      productData.sector = sector;
-    }
-    if (village) {
-      productData.village = village;
-    }
-    if (contactNumber) {
-      productData.contactNumber = contactNumber;
-    }
-    if (whatsappNumber) {
-      productData.whatsappNumber = whatsappNumber;
-    }
+    console.log('=== Creating Product with Cloudinary URLs ===');
+    console.log('Product data:', {
+      title: productData.title,
+      imageCount: imageUrls.length,
+      mainImage: productData.mainImage,
+    });
 
-    // Create product first
     const product = await prisma.product.create({
       data: productData,
     });
 
-    // Then store media references in ProductMedia collection
-    const mediaData = {
-      productId: product.id,
-      images: savedImages,
-      videos: savedVideos,
-      mainImage: savedImages[0] || null,
-      mainVideo: savedVideos[0] || null,
-    };
-
-    await (prisma as any).productMedia.create({
-      data: mediaData,
-    });
+    console.log('✅ Product created with ID:', product.id);
 
     return NextResponse.json({ 
       success: true, 
       message: "Product uploaded successfully to Cloudinary!", 
-      productId: product.id 
+      productId: product.id,
+      imageUrls: imageUrls
     });
 
   } catch (error) {

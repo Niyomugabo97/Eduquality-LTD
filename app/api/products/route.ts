@@ -1,9 +1,12 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function GET() {
   try {
     const products = await prisma.product.findMany({
+      where: {
+        hidden: false // Only fetch visible products
+      },
       include: {
         user: {
           select: {
@@ -12,14 +15,33 @@ export async function GET() {
             email: true,
           },
         },
-        media: true
       },
       orderBy: { createdAt: 'desc' }
     });
 
+    // Transform products to include Cloudinary image URLs
+    const transformedProducts = products.map((product: any) => {
+      if (product.images && product.images.length > 0) {
+        return {
+          ...product,
+          media: {
+            images: product.images, // Direct Cloudinary URLs
+            mainImage: product.mainImage, // Direct Cloudinary URL
+          }
+        };
+      }
+      return {
+        ...product,
+        media: {
+          images: [],
+          mainImage: null,
+        }
+      };
+    });
+
     return NextResponse.json({
       success: true,
-      data: products
+      data: transformedProducts
     });
   } catch (error) {
     console.error("Error fetching products:", error);

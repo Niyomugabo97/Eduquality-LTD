@@ -9,7 +9,7 @@ export default function ContactPage() {
       <div
         className="relative min-h-[60vh] bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/contact.jpeg/?height=800&width=1200')`,
+          backgroundImage: `linear-gradient(rgba(37, 99, 235, 0.7), rgba(99, 102, 241, 0.7)), url('/images/contact-phone.jpg')`,
         }}
       >
         <Header />
@@ -30,12 +30,12 @@ export default function ContactPage() {
                 </div>
               </nav>
 
-              <h1 className="text-5xl md:text-5xl font-bold mb-6 leading-tight text-[#F17105]">
+              <h1 className="text-5xl md:text-5xl font-bold mb-6 leading-tight text-white">
                 CONTACT
               </h1>
 
               <p className="text-xl md:text-[14px] text-gray-200 font-light">
-                Transform Your Business with Vertex Consulting!
+                Get in Touch with MY EDUQUALITY PARTNER LTD!
               </p>
             </div>
           </div>

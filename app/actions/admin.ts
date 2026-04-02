@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import prisma from "@/lib/prisma";
 
 export async function getAllUsers() {
   try {
@@ -33,9 +33,10 @@ export async function getAllUsers() {
   }
 }
 
-export async function getAllProductsForAdmin() {
+export async function getAllProductsForAdmin(limit?: number) {
   try {
     const products = await prisma.product.findMany({
+      take: limit, // Limit number of products
       include: {
         user: {
           select: {
@@ -87,6 +88,31 @@ export async function deleteUser(userId: string) {
   } catch (error) {
     console.error("Error deleting user:", error);
     return { success: false, message: "Failed to delete user." };
+  }
+}
+
+export async function toggleProductVisibility(productId: string, hidden: boolean) {
+  try {
+    const product = await prisma.product.findUnique({
+      where: { id: productId },
+    });
+
+    if (!product) {
+      return { success: false, message: "Product not found." };
+    }
+
+    await prisma.product.update({
+      where: { id: productId },
+      data: { hidden }
+    });
+
+    return { 
+      success: true, 
+      message: `Product ${hidden ? 'hidden' : 'unhidden'} successfully.` 
+    };
+  } catch (error) {
+    console.error("Error toggling product visibility:", error);
+    return { success: false, message: "Failed to update product visibility." };
   }
 }
 
