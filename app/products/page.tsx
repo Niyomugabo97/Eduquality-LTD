@@ -108,7 +108,7 @@ export default function ProductsPage() {
   return (
     <main className="min-h-screen">
       <div
-        className="relative min-h-[60vh] bg-cover bg-center bg-no-repeat"
+        className="relative min-h-[50vh] sm:min-h-[60vh] bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "linear-gradient(rgba(37, 99, 235, 0.7), rgba(99, 102, 241, 0.7)), url('/images/footer-bg.jpg')",
         }}
@@ -116,10 +116,10 @@ export default function ProductsPage() {
         <Header />
 
         <div className="absolute inset-0 flex items-center justify-start">
-          <div className="container mx-auto px-[3rem] sm:px-[3rem] md:px-[3rem] lg:px-[4rem] max-w-7xl">
-            <div className="text-white max-w-2xl pt-32">
-              <nav className="mb-6">
-                <div className="flex items-center space-x-2 text-sm">
+          <div className="container mx-auto px-4 sm:px-6 md:px-[3rem] lg:px-[4rem] max-w-7xl">
+            <div className="text-white max-w-full sm:max-w-2xl pt-20 sm:pt-32">
+              <nav className="mb-4 sm:mb-6">
+                <div className="flex items-center space-x-2 text-xs sm:text-sm">
                   <Link
                     href="/"
                     className="text-gray-300 hover:text-white transition-colors"
@@ -131,11 +131,11 @@ export default function ProductsPage() {
                 </div>
               </nav>
 
-              <h1 className="text-5xl md:text-5xl font-bold mb-6 leading-tight text-white">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight text-white">
                 OUR PRODUCTS
               </h1>
 
-              <p className="text-xl md:text-[14px] text-gray-200 font-light">
+              <p className="text-lg sm:text-xl text-gray-200 font-light">
                 Quality Products from MY EDUQUALITY PARTNER LTD!
               </p>
             </div>
@@ -143,51 +143,51 @@ export default function ProductsPage() {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 max-w-7xl py-16">
+      <div className="container mx-auto px-4 sm:px-6 max-w-7xl py-8 sm:py-16">
         {/* Category Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-8 sm:mb-12">
           <Card className="text-center">
-            <CardContent className="p-4">
-              <div className="text-2xl mb-2">💄</div>
-              <div className="font-semibold text-sm">Beauty & Care</div>
-              <div className="text-2xl font-bold text-blue-600">{stats.BEAUTY_PERSONAL_CARE || 0}</div>
+            <CardContent className="p-3 sm:p-4">
+              <div className="text-xl sm:text-2xl mb-2">💄</div>
+              <div className="font-semibold text-xs sm:text-sm">Beauty & Care</div>
+              <div className="text-xl sm:text-2xl font-bold text-blue-600">{stats.BEAUTY_PERSONAL_CARE || 0}</div>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="p-4">
-              <div className="text-2xl mb-2">📚</div>
-              <div className="font-semibold text-sm">School Materials</div>
-              <div className="text-2xl font-bold text-blue-600">{stats.WHOLESALE_SCHOOL_MATERIALS || 0}</div>
+            <CardContent className="p-3 sm:p-4">
+              <div className="text-xl sm:text-2xl mb-2">📚</div>
+              <div className="font-semibold text-xs sm:text-sm">School Materials</div>
+              <div className="text-xl sm:text-2xl font-bold text-blue-600">{stats.WHOLESALE_SCHOOL_MATERIALS || 0}</div>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="p-4">
-              <div className="text-2xl mb-2">🍪</div>
-              <div className="font-semibold text-sm">Snack Production</div>
-              <div className="text-2xl font-bold text-blue-600">{stats.SNACK_PRODUCTION || 0}</div>
+            <CardContent className="p-3 sm:p-4">
+              <div className="text-xl sm:text-2xl mb-2">🍪</div>
+              <div className="font-semibold text-xs sm:text-sm">Snack Production</div>
+              <div className="text-xl sm:text-2xl font-bold text-blue-600">{stats.SNACK_PRODUCTION || 0}</div>
             </CardContent>
           </Card>
           <Card className="text-center">
-            <CardContent className="p-4">
-              <div className="text-2xl mb-2">🔧</div>
-              <div className="font-semibold text-sm">Manufacturing Tools</div>
-              <div className="text-2xl font-bold text-blue-600">{stats.MANUFACTURING_TOOLS || 0}</div>
+            <CardContent className="p-3 sm:p-4">
+              <div className="text-xl sm:text-2xl mb-2">🔧</div>
+              <div className="font-semibold text-xs sm:text-sm">Manufacturing Tools</div>
+              <div className="text-xl sm:text-2xl font-bold text-blue-600">{stats.MANUFACTURING_TOOLS || 0}</div>
             </CardContent>
           </Card>
         </div>
 
         {/* Category Tabs */}
-        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-12">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="ALL">All Products</TabsTrigger>
-            <TabsTrigger value="BEAUTY_PERSONAL_CARE">Beauty & Care</TabsTrigger>
-            <TabsTrigger value="WHOLESALE_SCHOOL_MATERIALS">School Materials</TabsTrigger>
-            <TabsTrigger value="SNACK_PRODUCTION">Snack Production</TabsTrigger>
-            <TabsTrigger value="MANUFACTURING_TOOLS">Manufacturing Tools</TabsTrigger>
+        <Tabs value={selectedCategory} onValueChange={setSelectedCategory} className="mb-8 sm:mb-12">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2 h-auto p-1 sm:p-2">
+            <TabsTrigger value="ALL" className="text-xs sm:text-sm py-2 sm:py-3 px-2 sm:px-4 h-auto">All Products</TabsTrigger>
+            <TabsTrigger value="BEAUTY_PERSONAL_CARE" className="text-xs sm:text-sm py-2 sm:py-3 px-2 sm:px-4 h-auto">Beauty & Care</TabsTrigger>
+            <TabsTrigger value="WHOLESALE_SCHOOL_MATERIALS" className="text-xs sm:text-sm py-2 sm:py-3 px-2 sm:px-4 h-auto hidden sm:flex">School Materials</TabsTrigger>
+            <TabsTrigger value="SNACK_PRODUCTION" className="text-xs sm:text-sm py-2 sm:py-3 px-2 sm:px-4 h-auto">Snack Production</TabsTrigger>
+            <TabsTrigger value="MANUFACTURING_TOOLS" className="text-xs sm:text-sm py-2 sm:py-3 px-2 sm:px-4 h-auto hidden sm:flex">Manufacturing Tools</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="ALL" className="mt-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TabsContent value="ALL" className="mt-6 sm:mt-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {products.map((product) => (
                 <ProductCard key={product.id} product={product} />
               ))}
@@ -195,17 +195,17 @@ export default function ProductsPage() {
           </TabsContent>
 
           {Object.keys(categoryLabels).map((category) => (
-            <TabsContent key={category} value={category} className="mt-8">
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center">
-                  <span className="text-3xl mr-3">{categoryIcons[category as keyof typeof categoryIcons]}</span>
-                  {categoryLabels[category as keyof typeof categoryLabels]}
+            <TabsContent key={category} value={category} className="mt-6 sm:mt-8">
+              <div className="mb-4 sm:mb-6">
+                <h2 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 flex items-center">
+                  <span className="text-2xl sm:text-3xl mr-2 sm:mr-3">{categoryIcons[category as keyof typeof categoryIcons]}</span>
+                  <span className="text-lg sm:text-2xl">{categoryLabels[category as keyof typeof categoryLabels]}</span>
                 </h2>
-                <p className="text-gray-600">
+                <p className="text-gray-600 text-sm sm:text-base">
                   {getProductsByCategory(category).length} products in this category
                 </p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                 {getProductsByCategory(category).map((product) => (
                   <ProductCard key={product.id} product={product} />
                 ))}
@@ -215,18 +215,18 @@ export default function ProductsPage() {
         </Tabs>
 
         {products.length === 0 && (
-          <div className="text-center py-16">
-            <div className="bg-white p-8 rounded-2xl shadow-lg border border-blue-100 max-w-2xl mx-auto">
-              <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                <ShoppingBag className="w-10 h-10 text-blue-600" />
+          <div className="text-center py-8 sm:py-16">
+            <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-blue-100 max-w-full sm:max-w-2xl mx-auto">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6">
+                <ShoppingBag className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">No Products Yet</h3>
-              <p className="text-gray-600 mb-6">
+              <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-2">No Products Yet</h3>
+              <p className="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
                 Products will appear here once users start uploading them.
               </p>
               <Link
                 href="/user/dashboard"
-                className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:scale-105 transition-all duration-300"
+                className="inline-flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold hover:scale-105 transition-all duration-300 text-sm sm:text-base"
               >
                 Start Selling Products
               </Link>
@@ -269,58 +269,58 @@ function ProductCard({ product }: { product: Product }) {
         <img
           src={imageSrc}
           alt={product.title}
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition-transform duration-300"
           onError={handleImageError}
           onLoad={() => setImageError(false)}
         />
         {product.available && (
-          <Badge className="absolute top-2 right-2 bg-green-500 text-white">
+          <Badge className="absolute top-2 right-2 bg-green-500 text-white text-xs">
             Available
           </Badge>
         )}
       </div>
-      <CardContent className="p-4">
-        <h3 className="font-semibold text-lg text-gray-800 mb-2 line-clamp-1">
+      <CardContent className="p-3 sm:p-4">
+        <h3 className="font-semibold text-base sm:text-lg text-gray-800 mb-2 line-clamp-1">
           {product.title}
         </h3>
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+        <p className="text-gray-600 text-xs sm:text-sm mb-3 line-clamp-2">
           {product.description}
         </p>
         
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
           {product.price && (
-            <span className="text-xl font-bold text-blue-600">
+            <span className="text-lg sm:text-xl font-bold text-blue-600">
               FRW {product.price.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
             </span>
           )}
-          <Badge variant="outline" className="text-xs">
-            {product.category.replace('_', ' ')}
+          <Badge variant="outline" className="text-xs self-start sm:self-auto">
+            {product.category.replace('_', ' ').substring(0, 15) + (product.category.length > 15 ? '...' : '')}
           </Badge>
         </div>
 
-        <div className="space-y-2 text-sm text-gray-500">
+        <div className="space-y-2 text-xs sm:text-sm text-gray-500">
           {product.province && (
             <div className="flex items-center">
-              <MapPin className="w-4 h-4 mr-1" />
-              {product.province}, {product.district}
+              <MapPin className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+              <span className="truncate">{product.province}, {product.district}</span>
             </div>
           )}
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <span className="text-xs">By {product.user.name}</span>
-            <div className="flex space-x-6">
-              <Button variant="ghost" size="sm" className="h-10 w-10 p-0 bg-white/90 hover:bg-white text-blue-600 border border-blue-200 hover:border-blue-300 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
-                <Link href={`/product-details?id=${product.id}`} className="flex items-center justify-center">
-                  <span className="font-medium">View Details</span>
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 sm:items-center">
+              <Button variant="ghost" size="sm" className="h-9 sm:h-10 w-full sm:w-auto px-3 bg-white/90 hover:bg-white text-blue-600 border border-blue-200 hover:border-blue-300 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md">
+                <Link href={`/product-details?id=${product.id}`} className="flex items-center justify-center w-full">
+                  <span className="font-medium text-xs sm:text-sm">View Details</span>
                 </Link>
               </Button>
               {product.price && (
                 <Button 
                   onClick={handleAddToCart}
                   size="sm" 
-                  className="h-8 px-3 bg-blue-600 hover:bg-blue-700 text-white"
+                  className="h-8 sm:h-8 px-3 bg-blue-600 hover:bg-blue-700 text-white w-full sm:w-auto"
                 >
                   <ShoppingBag className="w-3 h-3 mr-1" />
-                  Add
+                  <span className="text-xs sm:text-sm">Add</span>
                 </Button>
               )}
             </div>

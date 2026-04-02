@@ -191,46 +191,52 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="flex-grow container mx-auto px-4 py-12 mt-24">
+      <div className="flex-grow container mx-auto px-3 sm:px-4 py-6 sm:py-12 mt-20 sm:mt-24">
         {/* Header */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8 mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
-          <div className="flex justify-between items-center">
+        <div className="bg-white rounded-xl sm:rounded-2xl shadow-lg border border-gray-200 p-4 sm:p-8 mb-6 sm:mb-8 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-4xl font-bold mb-2 flex items-center">
-                <Settings className="w-8 h-8 mr-3" />
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 flex items-center">
+                <Settings className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
                 Admin Dashboard
               </h1>
-              <p className="text-blue-100 text-lg">Full System Control Panel</p>
+              <p className="text-blue-100 text-sm sm:text-lg">Full System Control Panel</p>
             </div>
             <LogoutButton />
           </div>
         </div>
 
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 bg-white rounded-xl shadow-md p-2">
-            <TabsTrigger value="overview" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
-              <BarChart3 className="w-4 h-4" />
-              Overview
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2">
+            <TabsTrigger value="overview" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline sm:inline">Overview</span>
+              <span className="xs:hidden sm:hidden">📊</span>
             </TabsTrigger>
-            <TabsTrigger value="users" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
-              <Users2 className="w-4 h-4" />
-              Users
+            <TabsTrigger value="users" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              <Users2 className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline sm:inline">Users</span>
+              <span className="xs:hidden sm:hidden">👥</span>
             </TabsTrigger>
-            <TabsTrigger value="products" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
-              <Package className="w-4 h-4" />
-              Products
+            <TabsTrigger value="products" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              <Package className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline sm:inline">Products</span>
+              <span className="xs:hidden sm:hidden">📦</span>
             </TabsTrigger>
-            <TabsTrigger value="orders" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
-              <FileText className="w-4 h-4" />
-              Orders
+            <TabsTrigger value="orders" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline sm:inline">Orders</span>
+              <span className="xs:hidden sm:hidden">📋</span>
             </TabsTrigger>
-            <TabsTrigger value="delivery" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
-              <Truck className="w-4 h-4" />
-              Delivery
+            <TabsTrigger value="delivery" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              <Truck className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline sm:inline">Delivery</span>
+              <span className="xs:hidden sm:hidden">🚚</span>
             </TabsTrigger>
-            <TabsTrigger value="services" className="flex items-center gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg">
-              <Settings className="w-4 h-4" />
-              Services
+            <TabsTrigger value="services" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
+              <Settings className="w-3 h-3 sm:w-4 sm:h-4" />
+              <span className="hidden xs:inline sm:inline">Services</span>
+              <span className="xs:hidden sm:hidden">⚙️</span>
             </TabsTrigger>
           </TabsList>
 

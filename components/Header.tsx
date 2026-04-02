@@ -11,11 +11,13 @@ import {
   MessageCircle,
   AlignRight,
   LogOut,
+  ShoppingCart,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SideDrawer from "./SideDrawer";
 import { getAdminSession, logout } from "@/app/actions/auth"; // Import auth actions
 import { usePathname } from "next/navigation"; // To get current path
+import { useCart } from "@/contexts/CartContext";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -23,6 +25,7 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const pathname = usePathname();
+  const { getCartCount } = useCart();
 
   const navigation = [
     { name: "Home", href: "/" },
@@ -202,6 +205,23 @@ export default function Header() {
         isOpen={isSideDrawerOpen}
         onClose={() => setIsSideDrawerOpen(false)}
       />
+      
+      {/* Floating Cart Button - Always Visible and Undisturbed */}
+      <div className="fixed bottom-6 right-6 z-[9999]">
+        <Link href="/cart">
+          <Button
+            className="relative bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-full p-4 shadow-2xl hover:shadow-3xl transition-all duration-300 hover:scale-110 border-2 border-white"
+            size="lg"
+          >
+            <ShoppingCart className="w-6 h-6" />
+            {getCartCount() > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center border-2 border-white animate-pulse">
+                {getCartCount()}
+              </span>
+            )}
+          </Button>
+        </Link>
+      </div>
     </>
   );
 }
