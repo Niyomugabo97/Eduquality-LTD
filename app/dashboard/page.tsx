@@ -6,6 +6,7 @@ import LogoutButton from "./_components/logout-button";
 import AdminStats from "./_components/admin-stats";
 import TeamManagement from "./_components/team-management";
 import OrderManagement from "./_components/order-management";
+import OrderSummary from "./_components/order-summary";
 import RecordsTable from "./_components/records-table";
 import ProductPriceCalculator from "../user/dashboard/_components/product-price-calculator";
 import UserFeedback from "../user/dashboard/_components/user-feedback";
@@ -38,7 +39,8 @@ import {
   MessageSquare,
   Calculator,
   ShoppingBag,
-  MessageCircle
+  MessageCircle,
+  Download
 } from "lucide-react";
 
 const allServices = [
@@ -100,9 +102,69 @@ export default function DashboardPage() {
 
       // Mock data for new features (replace with actual API calls)
       setDeliveryRequests([
-        { id: 1, customer: "John Doe", product: "Fertilizer Package", status: "pending", date: "2026-03-30" },
-        { id: 2, customer: "Jane Smith", product: "Chemical Supply", status: "delivered", date: "2026-03-29" },
-        { id: 3, customer: "Bob Johnson", product: "Paint Set", status: "in-transit", date: "2026-03-28" },
+        { 
+          id: "1", 
+          orderNumber: "ORD-2026-001",
+          customerName: "John Doe", 
+          customerEmail: "john.doe@email.com",
+          customerPhone: "+250 788 123 456",
+          customerAddress: "KN 123 St",
+          customerCity: "Kigali",
+          customerProvince: "Kigali",
+          customerIdNumber: "1199080012345678",
+          serviceType: "Fertilizer Package", 
+          description: "Complete fertilizer package for agricultural use including NPK fertilizers and organic compounds",
+          quantity: 5,
+          price: 150000,
+          status: "pending", 
+          priority: "normal",
+          deliveryAddress: "KN 123 St, Kigali, Rwanda",
+          notes: "Customer requested urgent delivery for farming season",
+          createdAt: "2026-03-30T10:00:00Z",
+          updatedAt: "2026-03-30T10:00:00Z"
+        },
+        { 
+          id: "2", 
+          orderNumber: "ORD-2026-002",
+          customerName: "Jane Smith", 
+          customerEmail: "jane.smith@email.com",
+          customerPhone: "+250 788 987 654",
+          customerAddress: "Remera Sector",
+          customerCity: "Kigali",
+          customerProvince: "Kigali",
+          customerIdNumber: "1199050098765432",
+          serviceType: "Chemical Supply", 
+          description: "Industrial chemicals for manufacturing facility including solvents and cleaning agents",
+          quantity: 10,
+          price: 250000,
+          status: "delivered", 
+          priority: "high",
+          deliveryAddress: "Remera Sector, Kigali, Rwanda",
+          notes: "Delivered on time as per customer requirements",
+          createdAt: "2026-03-29T14:30:00Z",
+          updatedAt: "2026-03-29T16:45:00Z"
+        },
+        { 
+          id: "3", 
+          orderNumber: "ORD-2026-003",
+          customerName: "Bob Johnson", 
+          customerEmail: "bob.johnson@email.com",
+          customerPhone: "+250 788 555 333",
+          customerAddress: "Nyarugenge District",
+          customerCity: "Kigali",
+          customerProvince: "Kigali",
+          customerIdNumber: "1199120055557777",
+          serviceType: "Paint Set", 
+          description: "Professional paint set including brushes, rollers, and premium quality paint for interior decoration",
+          quantity: 3,
+          price: 85000,
+          status: "in-transit", 
+          priority: "normal",
+          deliveryAddress: "Nyarugenge District, Kigali, Rwanda",
+          notes: "Currently in transit - expected delivery tomorrow",
+          createdAt: "2026-03-28T09:15:00Z",
+          updatedAt: "2026-03-28T11:20:00Z"
+        },
       ]);
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
@@ -344,13 +406,24 @@ export default function DashboardPage() {
                 <FileText className="w-5 h-5" />
                 <span className="font-medium">Requests</span>
               </button>
+              <button
+                onClick={() => { setActiveTab("summary"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "summary" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <Download className="w-5 h-5" />
+                <span className="font-medium">Order Summary</span>
+              </button>
             </nav>
           </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           {/* Desktop Tabs - Hidden on Mobile */}
-          <TabsList className="hidden sm:grid w-full grid-cols-3 md:grid-cols-8 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2 overflow-x-auto">
+          <TabsList className="hidden sm:grid w-full grid-cols-3 md:grid-cols-9 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2 overflow-x-auto">
             <TabsTrigger value="overview" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Overview</span>
@@ -386,6 +459,10 @@ export default function DashboardPage() {
             <TabsTrigger value="requests" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <FileText className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Requests</span>
+            </TabsTrigger>
+            <TabsTrigger value="summary" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
+              <Download className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Summary</span>
             </TabsTrigger>
           </TabsList>
 
@@ -667,6 +744,11 @@ export default function DashboardPage() {
                 <RequestedProductsManager userId="admin" />
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Order Summary Tab */}
+          <TabsContent value="summary" className="space-y-4 sm:space-y-6">
+            <OrderSummary orders={deliveryRequests} onUpdate={fetchData} />
           </TabsContent>
 
           {/* Services Tab */}
