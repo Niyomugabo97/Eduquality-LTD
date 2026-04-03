@@ -112,8 +112,8 @@ export default function RequestedProductsManager({ userId }: { userId: string })
 
   const updateProductStatus = async (productId: string, newStatus: RequestedProduct['status']) => {
     try {
-      // Update actual order status in the database
-      const response = await fetch(`/api/customer-orders/${productId}`, {
+      // Update actual requested product status in the database
+      const response = await fetch(`/api/requested-products/${productId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })
@@ -121,7 +121,7 @@ export default function RequestedProductsManager({ userId }: { userId: string })
       
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to update order status');
+        throw new Error(errorData.error || 'Failed to update product status');
       }
       
       // Update local state
@@ -132,6 +132,8 @@ export default function RequestedProductsManager({ userId }: { userId: string })
             : product
         )
       );
+      
+      alert('Product status updated successfully!');
     } catch (error) {
       console.error("Error updating product status:", error);
       alert("Failed to update status. Please try again.");
@@ -142,15 +144,23 @@ export default function RequestedProductsManager({ userId }: { userId: string })
     if (!confirm("Are you sure you want to delete this requested product?")) return;
     
     try {
-      // TODO: Replace with actual API call
-      // await fetch(`/api/requested-products/${productId}`, {
-      //   method: 'DELETE'
-      // });
+      // Delete the requested product from database
+      const response = await fetch(`/api/requested-products/${productId}`, {
+        method: 'DELETE'
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete requested product');
+      }
       
       // Update local state
       setRequestedProducts(prev => prev.filter(product => product.id !== productId));
+      
+      alert('Requested product deleted successfully!');
     } catch (error) {
-      console.error("Error deleting product:", error);
+      console.error("Error deleting requested product:", error);
+      alert("Failed to delete requested product. Please try again.");
     }
   };
 
