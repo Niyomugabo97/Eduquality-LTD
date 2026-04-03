@@ -50,6 +50,7 @@ export default function LoginForm({ isAdmin = false }: LoginFormProps) {
               name="password"
               type="password"
               placeholder="Enter password"
+              autoComplete={isAdmin ? "current-password" : "current-password"}
               required
               disabled={isPending}
               className="w-full h-11 px-4 border text-base border-gray-300 rounded-lg focus:ring-2 focus:ring-[#F17105] focus:border-transparent transition-all duration-100"

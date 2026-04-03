@@ -58,7 +58,7 @@ const SignupForm = () => {
 
       <div>
         <Label htmlFor="password">Password</Label>
-        <Input id="password" name="password" type="password" required disabled={isPending} />
+        <Input id="password" name="password" type="password" autoComplete="new-password" required disabled={isPending} />
       </div>
 
       <div>
@@ -67,6 +67,7 @@ const SignupForm = () => {
           id="confirmPassword"
           name="confirmPassword"
           type="password"
+          autoComplete="new-password"
           required
           disabled={isPending}
         />

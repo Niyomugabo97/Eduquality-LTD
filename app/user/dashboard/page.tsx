@@ -5,12 +5,9 @@ import { getUserProducts } from "@/app/actions/product";
 import { redirect } from "next/navigation";
 import SimpleEnhancedProductUploadForm from "@/components/SimpleEnhancedProductUploadForm";
 import SimpleEnhancedProductCard from "@/components/SimpleEnhancedProductCard";
-import RequestedProductsManager from "./_components/requested-products-manager";
 import SellerChatInbox from "./_components/seller-chat-inbox";
-import UserFeedback from "./_components/user-feedback";
-import ProductPriceCalculator from "./_components/product-price-calculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calculator, Menu, X, ShoppingBag, MessageCircle, FileText, TrendingUp, MessageSquare } from "lucide-react";
+import { Menu, X, ShoppingBag, MessageCircle } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function UserDashboard() {
@@ -114,39 +111,6 @@ export default function UserDashboard() {
                 <MessageCircle className="w-5 h-5" />
                 <span className="font-medium">Messages</span>
               </button>
-              <button
-                onClick={() => { setActiveTab("feedback"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "feedback" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <MessageSquare className="w-5 h-5" />
-                <span className="font-medium">Feedback</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab("price-calculator"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "price-calculator" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <Calculator className="w-5 h-5" />
-                <span className="font-medium">Price Calculator</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab("requested"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "requested" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <FileText className="w-5 h-5" />
-                <span className="font-medium">Requested Products</span>
-              </button>
             </nav>
           </div>
         </div>
@@ -154,22 +118,12 @@ export default function UserDashboard() {
         {/* Main Content with Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           {/* Desktop Tabs - Hidden on Mobile */}
-          <TabsList className="hidden sm:grid w-full grid-cols-3 lg:grid-cols-5 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2">
+          <TabsList className="hidden sm:grid w-full grid-cols-2 lg:grid-cols-2 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2">
             <TabsTrigger value="products" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
               My Products
             </TabsTrigger>
             <TabsTrigger value="messages" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
               Messages
-            </TabsTrigger>
-            <TabsTrigger value="feedback" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
-              Feedback
-            </TabsTrigger>
-            <TabsTrigger value="price-calculator" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
-              <Calculator className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="text-center">Price Calc</span>
-            </TabsTrigger>
-            <TabsTrigger value="requested" className="text-xs sm:text-sm flex items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-2 sm:px-4">
-              Requested
             </TabsTrigger>
           </TabsList>
 
@@ -224,21 +178,6 @@ export default function UserDashboard() {
           {/* Messages Tab */}
           <TabsContent value="messages">
             <SellerChatInbox userId={user.id} userName={user.name} />
-          </TabsContent>
-
-          {/* Feedback Tab */}
-          <TabsContent value="feedback">
-            <UserFeedback userId={user.id} />
-          </TabsContent>
-
-          {/* Price Calculator Tab */}
-          <TabsContent value="price-calculator" className="pb-20 sm:pb-24">
-            <ProductPriceCalculator />
-          </TabsContent>
-
-          {/* Requested Products Tab */}
-          <TabsContent value="requested">
-            <RequestedProductsManager userId={user.id} />
           </TabsContent>
         </Tabs>
 

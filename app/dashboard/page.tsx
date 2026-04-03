@@ -7,6 +7,9 @@ import AdminStats from "./_components/admin-stats";
 import TeamManagement from "./_components/team-management";
 import OrderManagement from "./_components/order-management";
 import RecordsTable from "./_components/records-table";
+import ProductPriceCalculator from "../user/dashboard/_components/product-price-calculator";
+import UserFeedback from "../user/dashboard/_components/user-feedback";
+import RequestedProductsManager from "../user/dashboard/_components/requested-products-manager";
 import { getRegistrations } from "../actions/register";
 import { getAllProductsForAdmin, getAdminStats, deleteProductByAdmin, toggleProductVisibility } from "../actions/admin";
 import { getAllTeamMembers } from "../actions/team";
@@ -34,7 +37,8 @@ import {
   Users,
   MessageSquare,
   Calculator,
-  ShoppingBag
+  ShoppingBag,
+  MessageCircle
 } from "lucide-react";
 
 const allServices = [
@@ -307,13 +311,46 @@ export default function DashboardPage() {
                 <Truck className="w-5 h-5" />
                 <span className="font-medium">Orders</span>
               </button>
+              <button
+                onClick={() => { setActiveTab("calculator"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "calculator" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <Calculator className="w-5 h-5" />
+                <span className="font-medium">Price Calculator</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab("feedback"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "feedback" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <MessageSquare className="w-5 h-5" />
+                <span className="font-medium">Feedback</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab("requests"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "requests" 
+                    ? "bg-blue-600 text-white" 
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <FileText className="w-5 h-5" />
+                <span className="font-medium">Requests</span>
+              </button>
             </nav>
           </div>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           {/* Desktop Tabs - Hidden on Mobile */}
-          <TabsList className="hidden sm:grid w-full grid-cols-3 md:grid-cols-6 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2 overflow-x-auto">
+          <TabsList className="hidden sm:grid w-full grid-cols-3 md:grid-cols-8 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2 overflow-x-auto">
             <TabsTrigger value="overview" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Overview</span>
@@ -337,6 +374,18 @@ export default function DashboardPage() {
             <TabsTrigger value="orders" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <Truck className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Orders</span>
+            </TabsTrigger>
+            <TabsTrigger value="calculator" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
+              <Calculator className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Calculator</span>
+            </TabsTrigger>
+            <TabsTrigger value="feedback" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
+              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Feedback</span>
+            </TabsTrigger>
+            <TabsTrigger value="requests" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Requests</span>
             </TabsTrigger>
           </TabsList>
 
@@ -566,6 +615,56 @@ export default function DashboardPage() {
                     </div>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Orders Tab */}
+          <TabsContent value="orders" className="space-y-4 sm:space-y-6">
+            <OrderManagement onUpdate={fetchData} />
+          </TabsContent>
+
+          {/* Price Calculator Tab */}
+          <TabsContent value="calculator" className="space-y-4 sm:space-y-6">
+            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
+                <CardTitle className="flex items-center text-lg sm:text-xl">
+                  <Calculator className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
+                  Price Calculator
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6">
+                <ProductPriceCalculator />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Feedback Tab */}
+          <TabsContent value="feedback" className="space-y-4 sm:space-y-6">
+            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
+                <CardTitle className="flex items-center text-lg sm:text-xl">
+                  <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
+                  User Feedback
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6">
+                <UserFeedback userId="admin" />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Requests Tab */}
+          <TabsContent value="requests" className="space-y-4 sm:space-y-6">
+            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
+                <CardTitle className="flex items-center text-lg sm:text-xl">
+                  <FileText className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
+                  Product Requests
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4 sm:p-6">
+                <RequestedProductsManager userId="admin" />
               </CardContent>
             </Card>
           </TabsContent>

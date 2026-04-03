@@ -204,10 +204,12 @@ export default function CartPage() {
                   </div>
 
                   <div className="space-y-3 pt-4">
-                    <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center">
-                      <CreditCard className="w-5 h-5 mr-2" />
-                      Proceed to Checkout
-                    </Button>
+                    <Link href="/checkout">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold flex items-center justify-center">
+                        <CreditCard className="w-5 h-5 mr-2" />
+                        Proceed to Checkout
+                      </Button>
+                    </Link>
                     
                     <Link href="/products">
                       <Button variant="outline" className="w-full py-3 rounded-lg font-semibold">
