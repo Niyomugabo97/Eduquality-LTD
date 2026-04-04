@@ -40,7 +40,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
           }`}
         >
           <div className="flex items-center space-x-2">
-            <span className="text-xl font-bold">VERTEX CONSULTING</span>
+            <span className="text-xl font-bold">EDUQUALITY</span>
           </div>
           <button
             onClick={onClose}
@@ -58,13 +58,10 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             }`}
           >
             <h3 className="text-lg font-semibold mb-4 text-orange-200">
-              About VERTEX CONSULTING
+              About EDUQUALITY
             </h3>
             <p className="text-orange-100/90 mb-4 leading-relaxed text-sm">
-              Ready to transform your business with our professional consulting
-              services? Contact us today for a free consultation and discover
-              how we can help you achieve your business goals through strategic
-              planning and operational excellence.
+              EDUQUALITY LTD is your trusted partner for quality education solutions and professional services. We are committed to transforming educational experiences through innovative solutions, expert consulting, and comprehensive support services tailored to meet your unique needs.
             </p>
             <div className="flex space-x-3">
               <Facebook className="w-4 h-4 hover:text-orange-200 cursor-pointer transition-all duration-100 hover:scale-125 hover:-translate-y-1" />
@@ -72,7 +69,7 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
               <Instagram className="w-4 h-4 hover:text-orange-200 cursor-pointer transition-all duration-100 hover:scale-125 hover:-translate-y-1" />
               <Youtube className="w-4 h-4 hover:text-orange-200 cursor-pointer transition-all duration-100 hover:scale-125 hover:-translate-y-1" />
               <a
-                href="https://wa.me/250784761274"
+                href="https://wa.me/250788123456"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -97,18 +94,18 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
             </h3>
             <div className="space-y-3">
               {[
-                "Management Consultancy",
-                "Business Strategy Development",
-                "Chemical Manufacturing",
-                "Fertilizers & Nitrogen Compounds",
-                "Pesticides & Agrochemicals",
-                "Paints & Coatings",
-                "Soap & Detergents",
-                "Global Trading Services",
-                "Wholesale Trade",
-                "Airtime Service Retail",
-                "Cargo Handling",
-                "Technical Testing & Analysis",
+                "Educational Consulting",
+                "Quality Management Systems",
+                "Educational Technology Solutions",
+                "Curriculum Development",
+                "Teacher Training Programs",
+                "Student Assessment Services",
+                "Educational Resource Management",
+                "Learning Analytics",
+                "Educational Project Management",
+                "Institutional Development",
+                "Educational Research & Analysis",
+                "Professional Development Programs",
               ].map((service, index) => (
                 <div
                   key={service}
@@ -147,20 +144,20 @@ export default function SideDrawer({ isOpen, onClose }: SideDrawerProps) {
                 <h4 className="text-sm font-semibold mb-1 text-orange-200">
                   We're Open
                 </h4>
-                <p className="text-orange-100/90 text-sm">24/7</p>
+                <p className="text-orange-100/90 text-sm">Monday - Friday: 8:00 AM - 6:00 PM<br/>Saturday: 9:00 AM - 4:00 PM</p>
               </div>
               <div className="group hover:bg-orange-800/20 p-2 rounded transition-all duration-100">
                 <h4 className="text-sm font-semibold mb-1 text-orange-200">
                   Office Location
                 </h4>
-                <p className="text-orange-100/90 text-sm">Nyarugenge, Kigali</p>
+                <p className="text-orange-100/90 text-sm">Kigali, Rwanda</p>
               </div>
               <div className="group hover:bg-orange-800/20 p-2 rounded transition-all duration-100">
                 <h4 className="text-sm font-semibold mb-1 text-orange-200">
                   Send a Message
                 </h4>
                 <p className="text-orange-100/90 hover:text-orange-200 transition-colors cursor-pointer text-sm hover:underline">
-                  vertexconsultancy84@gmail.com
+                  myeduquality@gmail.com
                 </p>
               </div>
             </div>

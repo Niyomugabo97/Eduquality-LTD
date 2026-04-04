@@ -37,7 +37,7 @@ export async function sendContactEmail(formData: ContactFormData) {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #F17105; margin: 0;">New Contact Message</h1>
-          <p style="color: #666; margin: 5px 0;">VERTEX CONSULTING LTD</p>
+          <p style="color: #666; margin: 5px 0;">EDUQUALITY LTD</p>
         </div>
         
         <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
@@ -69,7 +69,7 @@ export async function sendContactEmail(formData: ContactFormData) {
         
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
           <p style="color: #888; font-size: 12px; margin: 0;">
-            This message was sent from the VERTEX CONSULTING LTD website contact form
+            This message was sent from the EDUQUALITY LTD website contact form
           </p>
           <p style="color: #888; font-size: 12px; margin: 5px 0 0 0;">
             Received on: ${new Date().toLocaleString()}
@@ -83,13 +83,13 @@ export async function sendContactEmail(formData: ContactFormData) {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #F17105; margin: 0;">Thank You for Contacting Us!</h1>
-          <p style="color: #666; margin: 5px 0;">VERTEX CONSULTING LTD</p>
+          <p style="color: #666; margin: 5px 0;">EDUQUALITY LTD</p>
         </div>
         
         <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
           <p style="color: #333; margin: 0 0 15px 0;">Dear ${formData.name},</p>
           <p style="color: #555; line-height: 1.6; margin: 0 0 15px 0;">
-            Thank you for reaching out to VERTEX CONSULTING LTD. We have received your message and our team will review it shortly.
+            Thank you for reaching out to EDUQUALITY LTD. We have received your message and our team will review it shortly.
           </p>
           <p style="color: #555; line-height: 1.6; margin: 0;">
             We typically respond to all inquiries within 24 hours during business days. If your matter is urgent, please don't hesitate to call us directly at <strong>+250 784 761 274</strong>.
@@ -111,16 +111,16 @@ export async function sendContactEmail(formData: ContactFormData) {
         </div>
         
         <div style="text-align: center; background-color: #F17105; color: white; padding: 15px; border-radius: 8px;">
-          <p style="margin: 0; font-weight: bold;">VERTEX CONSULTING</p>
-          <p style="margin: 5px 0 0 0; font-size: 14px;">Your trusted business partner • Professional consulting services • Available 24/7</p>
+          <p style="margin: 0; font-weight: bold;">EDUQUALITY</p>
+          <p style="margin: 5px 0 0 0; font-size: 14px;">Quality Education Solutions • Professional Services • Available 24/7</p>
         </div>
         
         <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
           <p style="color: #888; font-size: 12px; margin: 0;">
             <strong>Contact Information:</strong><br>
-            Email: vertexconsultancy84@gmail.com<br>
-            Phone: +250 784 761 274<br>
-            Address: Nyarugenge, Kigali, Rwanda
+            Email: info@eduquality.rw<br>
+            Phone: +250 788 123 456<br>
+            Address: Kigali, Rwanda
           </p>
         </div>
       </div>
@@ -128,8 +128,8 @@ export async function sendContactEmail(formData: ContactFormData) {
 
     // Send email to company
     await transporter.sendMail({
-      from: `"VERTEX CONSULTING LTD Contact Form" <${process.env.NODEMAILER_USER}>`,
-      to: "vertexconsultancy84@gmail.com", // Admin email
+      from: `"EDUQUALITY LTD Contact Form" <${process.env.NODEMAILER_USER}>`,
+      to: "info@eduquality.rw", // Admin email
       subject: `New Contact Message from ${formData.name}`,
       html: companyEmailContent,
       replyTo: formData.email,
@@ -137,9 +137,9 @@ export async function sendContactEmail(formData: ContactFormData) {
 
     // Send auto-reply to visitor
     await transporter.sendMail({
-      from: `"VERTEX CONSULTING LTD" <${process.env.NODEMAILER_USER}>`,
+      from: `"EDUQUALITY LTD" <${process.env.NODEMAILER_USER}>`,
       to: formData.email,
-      subject: "Thank you for contacting VERTEX CONSULTING LTD",
+      subject: "Thank you for contacting EDUQUALITY LTD",
       html: autoReplyContent,
     });
 
@@ -159,13 +159,13 @@ export async function sendAdminRegistrationNotification(
 ) {
   try {
     const transporter = createTransporter();
-    const adminEmail = "vertexconsultancy84@gmail.com";
+    const adminEmail = "info@eduquality.rw";
 
     const adminNotificationContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #0066FF; margin: 0;">New Service Registration Received!</h1>
-          <p style="color: #666; margin: 5px 0;">VERTEX CONSULTING LTD - Admin Notification</p>
+          <p style="color: #666; margin: 5px 0;">EDUQUALITY LTD - Admin Notification</p>
         </div>
         
         <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
@@ -211,7 +211,7 @@ export async function sendAdminRegistrationNotification(
         
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
           <p style="color: #888; font-size: 12px; margin: 0;">
-            This notification was sent from the VERTEX CONSULTING LTD website.
+            This notification was sent from the EDUQUALITY LTD website.
           </p>
           <p style="color: #888; font-size: 12px; margin: 5px 0 0 0;">
             Received on: ${new Date().toLocaleString()}
@@ -221,7 +221,7 @@ export async function sendAdminRegistrationNotification(
     `;
 
     await transporter.sendMail({
-      from: `"VERTEX CONSULTING LTD Notifications" <${process.env.NODEMAILER_USER}>`,
+      from: `"EDUQUALITY LTD Notifications" <${process.env.NODEMAILER_USER}>`,
       to: adminEmail,
       subject: `New Service Registration from ${formData.companyName}`,
       html: adminNotificationContent,

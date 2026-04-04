@@ -170,10 +170,12 @@ export default function RequestedProductsManager({ userId }: { userId: string })
       approved: { color: 'bg-blue-100 text-blue-800', icon: CheckCircle, label: 'Approved' },
       cancelled: { color: 'bg-red-100 text-red-800', icon: XCircle, label: 'Cancelled' },
       delivered: { color: 'bg-green-100 text-green-800', icon: Truck, label: 'Delivered' },
-      in_process: { color: 'bg-purple-100 text-purple-800', icon: AlertCircle, label: 'In Process' }
+      in_process: { color: 'bg-purple-100 text-purple-800', icon: AlertCircle, label: 'In Process' },
+      'in-transit': { color: 'bg-purple-100 text-purple-800', icon: AlertCircle, label: 'In Transit' },
+      'in_progress': { color: 'bg-purple-100 text-purple-800', icon: AlertCircle, label: 'In Progress' }
     };
 
-    const config = statusConfig[status];
+    const config = statusConfig[status] || statusConfig.pending;
     const Icon = config.icon;
 
     return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, startTransition } from "react";
 import {
   Table,
   TableBody,
@@ -67,7 +67,9 @@ export default function ContactsTable({ initialContacts }: ContactsTableProps) {
     if (
       window.confirm("Are you sure you want to delete this contact message?")
     ) {
-      await deleteAction(id);
+      startTransition(() => {
+        deleteAction(id);
+      });
     }
   };
 

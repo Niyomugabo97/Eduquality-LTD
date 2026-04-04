@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   try {
     // Check if admin already exists
     const existingAdmin = await prisma.admin.findUnique({
-      where: { email: "vertexconsultancy84@gmail.com" },
+      where: { email: "info@eduquality.rw" },
     });
 
     if (existingAdmin) {
@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     const admin = await prisma.admin.create({
       data: {
         name: "Admin",
-        email: "vertexconsultancy84@gmail.com",
+        email: "info@eduquality.rw",
         password: hashedPassword,
         role: "admin",
       },

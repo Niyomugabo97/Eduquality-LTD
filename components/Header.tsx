@@ -32,6 +32,7 @@ export default function Header() {
     { name: "About Us", href: "/about" },
     { name: "Services", href: "/services" },
     { name: "Products", href: "/products" },
+    { name: "EDUQUALITY Foundation", href: "/eduquality-foundation" },
     { name: "Contact", href: "/contact" },
   ];
 

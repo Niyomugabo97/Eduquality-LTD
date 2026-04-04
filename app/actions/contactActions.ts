@@ -58,13 +58,13 @@ export async function createContact(prevState: any, formData: FormData) {
 
     // Send email notification to company (admin)
     const transporter = createTransporter();
-    const adminEmail = "vertexconsultancy84@gmail.com"; // The admin's email address
+    const adminEmail = "myeduquality@gmail.com"; // The admin's email address
 
     const companyEmailContent = `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #F17105; margin: 0;">New Contact Message</h1>
-          <p style="color: #666; margin: 5px 0;">VERTEX CONSULTING LTD</p>
+          <p style="color: #666; margin: 5px 0;">EDUQUALITY LTD</p>
         </div>
         
         <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
@@ -96,7 +96,7 @@ export async function createContact(prevState: any, formData: FormData) {
         
         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
           <p style="color: #888; font-size: 12px; margin: 0;">
-            This message was sent from the VERTEX CONSULTING LTD website contact form
+            This message was sent from the EDUQUALITY LTD website contact form
           </p>
           <p style="color: #888; font-size: 12px; margin: 5px 0 0 0;">
             Received on: ${new Date().toLocaleString()}
@@ -110,13 +110,13 @@ export async function createContact(prevState: any, formData: FormData) {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #F17105; margin: 0;">Thank You for Contacting Us!</h1>
-          <p style="color: #666; margin: 5px 0;">VERTEX CONSULTING LTD</p>
+          <p style="color: #666; margin: 5px 0;">EDUQUALITY LTD</p>
         </div>
         
         <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
           <p style="color: #333; margin: 0 0 15px 0;">Dear ${parsed.data.name},</p>
           <p style="color: #555; line-height: 1.6; margin: 0 0 15px 0;">
-            Thank you for reaching out to VERTEX CONSULTING LTD. We have received your message and our team will review it shortly.
+            Thank you for reaching out to EDUQUALITY LTD. We have received your message and our team will review it shortly.
           </p>
           <p style="color: #555; line-height: 1.6; margin: 0;">
             We typically respond to all inquiries within 24 hours during business days. If your matter is urgent, please don't hesitate to call us directly at <strong>+250 784 761 274</strong>.
@@ -138,23 +138,23 @@ export async function createContact(prevState: any, formData: FormData) {
         </div>
         
         <div style="text-align: center; background-color: #F17105; color: white; padding: 15px; border-radius: 8px;">
-          <p style="margin: 0; font-weight: bold;">VERTEX CONSULTING</p>
-          <p style="margin: 5px 0 0 0; font-size: 14px;">Your trusted business partner • Professional consulting services • Available 24/7</p>
+          <p style="margin: 0; font-weight: bold;">EDUQUALITY</p>
+          <p style="margin: 5px 0 0 0; font-size: 14px;">Quality Education Solutions • Professional Services • Available 24/7</p>
         </div>
         
         <div style="text-align: center; margin-top: 20px; padding-top: 15px; border-top: 1px solid #eee;">
           <p style="color: #888; font-size: 12px; margin: 0;">
             <strong>Contact Information:</strong><br>
-            Email: vertexconsultancy84@gmail.com<br>
-            Phone: +250 784 761 274<br>
-            Address: Nyarugenge, Kigali, Rwanda
+            Email: myeduquality@gmail.com<br>
+            Phone: +250 788 123 456<br>
+            Address: Kigali, Rwanda
           </p>
         </div>
       </div>
     `;
 
     await transporter.sendMail({
-      from: `"VERTEX CONSULTING LTD Contact Form" <${process.env.NODEMAILER_USER}>`,
+      from: `"EDUQUALITY LTD Contact Form" <${process.env.NODEMAILER_USER}>`,
       to: adminEmail,
       subject: `New Contact Message from ${parsed.data.name}`,
       html: companyEmailContent,
@@ -162,9 +162,9 @@ export async function createContact(prevState: any, formData: FormData) {
     });
 
     await transporter.sendMail({
-      from: `"VERTEX CONSULTING LTD" <${process.env.NODEMAILER_USER}>`,
+      from: `"EDUQUALITY LTD" <${process.env.NODEMAILER_USER}>`,
       to: parsed.data.email,
-      subject: "Thank you for contacting VERTEX CONSULTING LTD",
+      subject: "Thank you for contacting EDUQUALITY LTD",
       html: autoReplyContent,
     });
 
