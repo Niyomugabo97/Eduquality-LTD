@@ -100,72 +100,56 @@ export default function DashboardPage() {
         setTeamMembers(teamRes.data || []);
       }
 
-      // Mock data for new features (replace with actual API calls)
-      setDeliveryRequests([
-        { 
-          id: "1", 
-          orderNumber: "ORD-2026-001",
-          customerName: "John Doe", 
-          customerEmail: "john.doe@email.com",
-          customerPhone: "+250 788 123 456",
-          customerAddress: "KN 123 St",
-          customerCity: "Kigali",
-          customerProvince: "Kigali",
-          customerIdNumber: "1199080012345678",
-          serviceType: "Fertilizer Package", 
-          description: "Complete fertilizer package for agricultural use including NPK fertilizers and organic compounds",
-          quantity: 5,
-          price: 150000,
-          status: "pending", 
-          priority: "normal",
-          deliveryAddress: "KN 123 St, Kigali, Rwanda",
-          notes: "Customer requested urgent delivery for farming season",
-          createdAt: "2026-03-30T10:00:00Z",
-          updatedAt: "2026-03-30T10:00:00Z"
-        },
-        { 
-          id: "2", 
-          orderNumber: "ORD-2026-002",
-          customerName: "Jane Smith", 
-          customerEmail: "jane.smith@email.com",
-          customerPhone: "+250 788 987 654",
-          customerAddress: "Remera Sector",
-          customerCity: "Kigali",
-          customerProvince: "Kigali",
-          customerIdNumber: "1199050098765432",
-          serviceType: "Chemical Supply", 
-          description: "Industrial chemicals for manufacturing facility including solvents and cleaning agents",
-          quantity: 10,
-          price: 250000,
-          status: "delivered", 
-          priority: "high",
-          deliveryAddress: "Remera Sector, Kigali, Rwanda",
-          notes: "Delivered on time as per customer requirements",
-          createdAt: "2026-03-29T14:30:00Z",
-          updatedAt: "2026-03-29T16:45:00Z"
-        },
-        { 
-          id: "3", 
-          orderNumber: "ORD-2026-003",
-          customerName: "Bob Johnson", 
-          customerEmail: "bob.johnson@email.com",
-          customerPhone: "+250 788 555 333",
-          customerAddress: "Nyarugenge District",
-          customerCity: "Kigali",
-          customerProvince: "Kigali",
-          customerIdNumber: "1199120055557777",
-          serviceType: "Paint Set", 
-          description: "Professional paint set including brushes, rollers, and premium quality paint for interior decoration",
-          quantity: 3,
-          price: 85000,
-          status: "in-transit", 
-          priority: "normal",
-          deliveryAddress: "Nyarugenge District, Kigali, Rwanda",
-          notes: "Currently in transit - expected delivery tomorrow",
-          createdAt: "2026-03-28T09:15:00Z",
-          updatedAt: "2026-03-28T11:20:00Z"
-        },
-      ]);
+      // Fetch real orders from API
+      try {
+        const ordersResponse = await fetch('/api/orders?limit=50', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        if (ordersResponse.ok) {
+          const ordersData = await ordersResponse.json();
+          if (ordersData.success && ordersData.data) {
+            // Transform the orders to match the expected format
+            const transformedOrders = ordersData.data.map((order: any) => ({
+              id: order.id,
+              orderNumber: order.orderNumber,
+              customerName: order.customerName,
+              customerEmail: order.customerEmail,
+              customerPhone: order.customerPhone || 'N/A',
+              customerAddress: order.deliveryAddress || 'N/A',
+              customerCity: 'N/A',
+              customerProvince: 'N/A',
+              customerIdNumber: 'N/A',
+              serviceType: order.serviceType,
+              description: order.description,
+              quantity: order.quantity || 1,
+              price: order.price || 0,
+              status: order.status.toLowerCase(),
+              priority: order.priority.toLowerCase(),
+              deliveryAddress: order.deliveryAddress || 'N/A',
+              notes: order.notes || '',
+              createdAt: order.createdAt,
+              updatedAt: order.updatedAt,
+              assignedTo: order.assignedTo || '',
+              estimatedDelivery: order.estimatedDelivery || '',
+              actualDelivery: order.actualDelivery || '',
+            }));
+            setDeliveryRequests(transformedOrders);
+          } else {
+            console.error("API returned error:", ordersData);
+            setDeliveryRequests([]);
+          }
+        } else {
+          console.error("Failed to fetch orders:", ordersResponse.statusText);
+          setDeliveryRequests([]);
+        }
+      } catch (error) {
+        console.error("Error fetching orders from API:", error);
+        setDeliveryRequests([]);
+      }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
       // Set empty arrays to prevent undefined errors

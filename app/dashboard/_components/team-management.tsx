@@ -510,76 +510,95 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
 
         {/* Edit Team Member Dialog */}
         <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-md">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle>Edit Team Member</DialogTitle>
+              <DialogTitle className="text-xl">Edit Team Member</DialogTitle>
               <DialogDescription>
-                Update team member information.
+                Update team member information and profile photo.
               </DialogDescription>
             </DialogHeader>
             {selectedMember && (
               <form ref={updateFormRef} action={updateFormAction}>
                 <input type="hidden" name="id" value={selectedMember.id} />
-                <div className="space-y-4">
-                  <div>
-                    <Label htmlFor="edit-name">Name</Label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-name" className="text-sm font-semibold text-gray-700">
+                      Full Name <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="edit-name"
                       name="name"
                       type="text"
                       defaultValue={selectedMember.name}
-                      placeholder="Enter team member name"
+                      placeholder="Enter team member's full name"
                       required
                       disabled={isUpdating}
+                      className="h-11"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="edit-position">Position</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-position" className="text-sm font-semibold text-gray-700">
+                      Position / Title <span className="text-red-500">*</span>
+                    </Label>
                     <Input
                       id="edit-position"
                       name="position"
                       type="text"
                       defaultValue={selectedMember.position}
-                      placeholder="Enter position/title"
+                      placeholder="e.g., CEO, Manager, Developer"
                       required
                       disabled={isUpdating}
+                      className="h-11"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="edit-email">Email (Optional)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-email" className="text-sm font-semibold text-gray-700">
+                      Email Address <span className="text-gray-400 font-normal">(Optional)</span>
+                    </Label>
                     <Input
                       id="edit-email"
                       name="email"
                       type="email"
                       defaultValue={selectedMember.email || ''}
-                      placeholder="Enter email address"
+                      placeholder="member@company.com"
                       disabled={isUpdating}
+                      className="h-11"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="edit-phone">Phone (Optional)</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-phone" className="text-sm font-semibold text-gray-700">
+                      Phone Number <span className="text-gray-400 font-normal">(Optional)</span>
+                    </Label>
                     <Input
                       id="edit-phone"
                       name="phone"
                       type="tel"
                       defaultValue={selectedMember.phone || ''}
-                      placeholder="Enter phone number"
+                      placeholder="+250 7XX XXX XXX"
                       disabled={isUpdating}
+                      className="h-11"
                     />
                   </div>
-                  <div>
-                    <Label htmlFor="edit-order">Display Order</Label>
+                  <div className="space-y-2">
+                    <Label htmlFor="edit-order" className="text-sm font-semibold text-gray-700">
+                      Display Order <span className="text-gray-400 font-normal">(Optional)</span>
+                    </Label>
                     <Input
                       id="edit-order"
                       name="order"
                       type="number"
                       defaultValue={selectedMember.order}
+                      placeholder="0"
                       disabled={isUpdating}
+                      className="h-11"
                     />
+                    <p className="text-xs text-gray-500">Lower numbers appear first</p>
                   </div>
-                  <div>
-                    <Label htmlFor="edit-image">Photo (optional)</Label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
+                  <div className="space-y-2 md:col-span-2">
+                    <Label htmlFor="edit-image" className="text-sm font-semibold text-gray-700">
+                      Profile Photo <span className="text-gray-400 font-normal">(Optional)</span>
+                    </Label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-orange-400 transition-colors">
                       <input
                         ref={updateFileInputRef}
                         id="edit-image"
@@ -593,34 +612,36 @@ export default function TeamManagement({ initialTeamMembers, onUpdate }: TeamMan
                         type="button"
                         onClick={() => updateFileInputRef.current?.click()}
                         disabled={isUpdating}
-                        className="text-orange-600 hover:text-orange-700 font-semibold"
+                        className="text-orange-600 hover:text-orange-700 font-semibold flex flex-col items-center"
                       >
-                        <Upload className="w-8 h-8 mx-auto mb-2" />
-                        Click to change photo
+                        <Upload className="w-10 h-10 mb-2" />
+                        <span>Click to change photo</span>
                       </button>
-                      <p className="text-sm text-gray-500">Leave empty to keep current photo</p>
+                      <p className="text-sm text-gray-500 mt-2">PNG, JPG, GIF up to 10MB</p>
+                      <p className="text-sm text-gray-400 mt-1">Leave empty to keep current photo</p>
                       {selectedMember.image && (
-                        <div className="mt-2">
+                        <div className="mt-4 flex flex-col items-center">
+                          <p className="text-xs text-gray-500 mb-2">Current photo:</p>
                           <img
                             src={selectedMember.image}
-                            alt="Current"
-                            className="w-16 h-16 object-cover rounded mx-auto"
+                            alt="Current profile"
+                            className="w-20 h-20 object-cover rounded-lg border-2 border-gray-200"
                           />
                         </div>
                       )}
                     </div>
                   </div>
                   {updateState.message && (
-                    <div className={`p-3 rounded-lg text-sm ${
+                    <div className={`p-3 rounded-lg text-sm md:col-span-2 ${
                       updateState.success
                         ? "bg-green-50 text-green-700 border border-green-200"
                         : "bg-red-50 text-red-700 border border-red-200"
-                  }`}>
+                    }`}>
                       {updateState.message}
-                  </div>
+                    </div>
                   )}
                 </div>
-                <DialogFooter>
+                <DialogFooter className="mt-6">
                   <Button
                     type="button"
                     variant="outline"
