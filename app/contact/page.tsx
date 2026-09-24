@@ -35,7 +35,7 @@ export default function ContactPage() {
               </h1>
 
               <p className="text-xl md:text-[14px] text-gray-200 font-light">
-                Get in Touch with MY EDUQUALITY PARTNER LTD!
+                Get in Touch with NIBEZA FOUNDATION!
               </p>
             </div>
           </div>

@@ -1,382 +1,389 @@
+
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
-import { Users, Heart, Target, Award } from "lucide-react";
+  Target,
+  Heart,
+  ShieldCheck,
+  Sparkles,
+  Users,
+  BookOpen,
+  HandHeart,
+  CheckCircle,
+  Lightbulb,
+  Cross,
+} from "lucide-react";
 
-interface TeamMember {
-  id: string;
-  name: string;
-  position: string;
-  image: string;
-  email?: string;
-  phone?: string;
-  order: number;
-  createdAt: string;
-  updatedAt: string;
-}
+// ============================================================
+// CORE VALUES
+// ============================================================
+
+const CORE_VALUES = [
+  {
+    number: 1,
+    title: "Christ-Centeredness",
+    icon: Cross,
+    verse: "Whatever you do, do it all for the glory of God. (1 Corinthians 10:31)",
+    description:
+      "We acknowledge Jesus Christ as the foundation of our work and seek to reflect His love, compassion and truth in everything we do.",
+  },
+  {
+    number: 2,
+    title: "Compassion",
+    icon: Heart,
+    verse: "Be kind and compassionate to one another. (Ephesians 4:32)",
+    description:
+      "We serve every child with love, dignity, mercy and genuine concern for their wellbeing.",
+  },
+  {
+    number: 3,
+    title: "Integrity",
+    icon: ShieldCheck,
+    verse: "The integrity of the upright guides them. (Proverbs 11:3)",
+    description:
+      "We uphold honesty, transparency, accountability and ethical stewardship in all our actions and use of resources.",
+  },
+  {
+    number: 4,
+    title: "Excellence",
+    icon: Sparkles,
+    verse: "Whatever you do, work at it with all your heart. (Colossians 3:23)",
+    description:
+      "We strive for the highest standards in service delivery, education support and organisational management.",
+  },
+  {
+    number: 5,
+    title: "Respect and Human Dignity",
+    icon: Users,
+    verse: "",
+    description:
+      "Every child is created in the image of God and deserves to be treated with respect, fairness and dignity regardless of their background.",
+  },
+  {
+    number: 6,
+    title: "Discipline and Responsibility",
+    icon: CheckCircle,
+    verse: "",
+    description:
+      "We promote good behaviour, obedience, hard work, respect for authority and responsible use of opportunities entrusted to our beneficiaries.",
+  },
+  {
+    number: 7,
+    title: "Education and Lifelong Learning",
+    icon: BookOpen,
+    verse: "",
+    description:
+      "We believe education is the most powerful tool for breaking the cycle of poverty and empowering future generations.",
+  },
+  {
+    number: 8,
+    title: "Servant Leadership",
+    icon: HandHeart,
+    verse:
+      "For even the Son of Man did not come to be served, but to serve. (Mark 10:45)",
+    description:
+      "We lead by serving others with humility, sacrifice and commitment to the common good.",
+  },
+  {
+    number: 9,
+    title: "Accountability",
+    icon: ShieldCheck,
+    verse: "",
+    description:
+      "We are responsible to God, our beneficiaries, donors, partners and the communities we serve, ensuring faithful stewardship of every resource entrusted to us.",
+  },
+  {
+    number: 10,
+    title: "Empowerment",
+    icon: Lightbulb,
+    verse: "",
+    description:
+      "We equip children and young people with knowledge, skills, values and confidence to become self-reliant, productive and positive contributors to society.",
+  },
+];
+
+// ============================================================
+// MAIN COMPONENT
+// ============================================================
 
 export default function AboutUsSection() {
-  const [teamworkers, setTeamworkers] = useState<TeamMember[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTeamMembers();
-  }, []);
-
-  const fetchTeamMembers = async () => {
-    try {
-      const response = await fetch('/api/team');
-      
-      if (!response.ok) {
-        console.error('Failed to fetch team members:', response.status);
-        useFallbackData();
-        return;
-      }
-      
-      const data = await response.json();
-      
-      if (data.success && data.data && data.data.length > 0) {
-        setTeamworkers(data.data);
-      } else {
-        useFallbackData();
-      }
-    } catch (error) {
-      console.error('Error fetching team members:', error);
-      useFallbackData();
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const useFallbackData = () => {
-    console.log('Using fallback team data');
-    setTeamworkers([
-      {
-        id: "1",
-        name: "Board Chairperson",
-        position: "Strategic Leadership",
-        image: "/images/worker1.jpg",
-        email: "contact@eduquality.rw",
-        phone: "+250788676421",
-        order: 0,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        name: "Chief Executive Officer",
-        position: "Operations Management",
-        image: "/images/worker2.jpg",
-        email: "contact@eduquality.rw",
-        phone: "+250788676421",
-        order: 1,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "3",
-        name: "Finance Director",
-        position: "Financial Strategy",
-        image: "/images/worker3.jpg",
-        email: "contact@eduquality.rw",
-        phone: "+250788676421",
-        order: 2,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "4",
-        name: "Marketing Director",
-        position: "Brand Development",
-        image: "/images/worker4.jpg",
-        email: "contact@eduquality.rw",
-        phone: "+250788676421",
-        order: 3,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "5",
-        name: "Technical Lead",
-        position: "Innovation & Technology",
-        image: "/images/worker5.jpg",
-        email: "contact@eduquality.rw",
-        phone: "+250788676421",
-        order: 4,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      },
-      {
-        id: "6",
-        name: "Customer Relations Manager",
-        position: "Client Experience",
-        image: "/images/profile.jpg",
-        email: "contact@eduquality.rw",
-        phone: "+250788676421",
-        order: 5,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      }
-    ]);
-  };
-
+  const sectionRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  const [animationKey, setAnimationKey] = useState(0);
-  const sectionRef = useRef(null);
+
+  // ==========================================================
+  // INTERSECTION OBSERVER
+  // ==========================================================
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          setAnimationKey((prev) => prev + 1);
-        } else {
-          setIsVisible(false);
-        }
+        setIsVisible(entry.isIntersecting);
       },
       {
-        threshold: 0.2,
+        threshold: 0.1,
         rootMargin: "-50px 0px",
       }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    const currentSection = sectionRef.current;
+
+    if (currentSection) {
+      observer.observe(currentSection);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (currentSection) {
+        observer.unobserve(currentSection);
       }
     };
   }, []);
-
-  if (loading) {
-    return (
-      <section
-        ref={sectionRef}
-        id="about"
-        className="py-16 md:py-24 bg-gradient-to-br from-blue-50 to-indigo-50"
-      >
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-              Loading Team...
-            </h2>
-          </div>
-        </div>
-      </section>
-    );
-  }
 
   return (
     <section
       ref={sectionRef}
       id="about"
-      className="py-16 px-4 bg-gradient-to-br from-blue-50 to-indigo-50"
+      className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50 py-20 md:py-28"
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Section Header */}
-        <div className={`transition-all duration-1000 ${isVisible ? "animate-fadeInUp" : "opacity-0 translate-y-8"}`}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">About Us</h2>
-            <div className="w-24 h-1 bg-blue-600 mx-auto rounded-full"></div>
-          </div>
+      {/* ======================================================
+          BACKGROUND DECORATIONS
+      ====================================================== */}
+
+      <div className="absolute top-0 left-0 w-72 h-72 bg-blue-200/20 rounded-full blur-3xl" />
+
+      <div className="absolute bottom-0 right-0 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl" />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* ====================================================
+            SECTION HEADER
+        ==================================================== */}
+
+        <div
+          className={`text-center mb-16 transition-all duration-1000 ${
+            isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-10"
+          }`}
+        >
+          <span className="inline-flex items-center px-5 py-2 rounded-full bg-blue-100 text-blue-700 text-sm font-bold uppercase tracking-widest mb-5">
+            About NIBEZA Foundation
+          </span>
+
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 mb-6">
+            Who We Are
+          </h2>
+
+          <div className="w-24 h-1.5 bg-blue-600 mx-auto rounded-full mb-6" />
+
+          <p className="max-w-3xl mx-auto text-lg md:text-xl text-gray-600 leading-relaxed">
+            NIBEZA FOUNDATION is committed to transforming the lives of
+            orphaned and vulnerable children through education, spiritual
+            guidance, protection, mentorship and holistic support.
+          </p>
         </div>
 
-        {/* Company Background */}
-        <div className={`transition-all duration-1000 delay-200 ${isVisible ? "animate-fadeInUp" : "opacity-0 translate-y-8"}`}>
-          <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
-            <div>
-              <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                MY EDUQUALITY PARTNER LTD is a multi-service company based in Kigali, Nyarugenge, Rwanda, 
-                committed to providing comprehensive solutions that address diverse community needs. 
-                Founded on the principles of quality, reliability, and social responsibility, we have grown 
-                to become a trusted partner for individuals and organizations across various sectors.
-              </p>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                Our integrated approach combines educational support, business services, beauty care, 
-                delivery solutions, and charitable activities to create a holistic service ecosystem 
-                that serves our community 24/7.
-              </p>
-            </div>
-            <div className="flex items-center justify-center bg-white p-12 rounded-2xl shadow-lg border border-blue-100">
-              <div className="relative">
-                <div className="w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 bg-blue-50 rounded-full p-4 flex items-center justify-center">
-                  <img
-                    src="/images/logo.jpeg"
-                    alt="MY EDUQUALITY PARTNER LTD Logo"
-                    className="w-full h-full object-contain"
-                    style={{ maxHeight: '100%', maxWidth: '100%' }}
-                    onError={(e) => {
-                      console.error('Logo failed to load:', e);
-                      // Try alternative approach
-                      e.currentTarget.style.display = 'none';
-                      const parent = e.currentTarget.parentElement;
-                      if (parent) {
-                        parent.innerHTML = '<div class="w-full h-full bg-blue-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">MY EDUQUALITY<br/>PARTNER LTD</div>';
-                      }
-                    }}
-                    onLoad={() => {
-                      console.log('Logo loaded successfully');
-                    }}
-                  />
+        {/* ====================================================
+            VISION & MISSION
+        ==================================================== */}
+
+        <div className="grid lg:grid-cols-2 gap-8 mb-24">
+          {/* VISION */}
+
+          <div
+            className={`group relative overflow-hidden rounded-3xl bg-white shadow-xl border border-blue-100 p-8 md:p-10 transition-all duration-1000 hover:-translate-y-2 hover:shadow-2xl ${
+              isVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-10"
+            }`}
+          >
+            {/* Decorative background */}
+            <div className="absolute top-0 right-0 w-40 h-40 bg-blue-100/60 rounded-full -translate-y-20 translate-x-20" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center">
+                  <Target className="w-8 h-8 text-blue-600" />
+                </div>
+
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-widest text-blue-600">
+                    Our Vision
+                  </p>
+
+                  <h3 className="text-2xl md:text-3xl font-bold text-gray-900">
+                    The Foundation Vision
+                  </h3>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
 
-        {/* Vision & Mission */}
-        <div className={`transition-all duration-1000 delay-300 ${isVisible ? "animate-fadeInUp" : "opacity-0 translate-y-8"}`}>
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-2xl border border-blue-100">
-              <div className="flex items-center mb-4">
-                <Target className="w-8 h-8 text-blue-600 mr-3" />
-                <h3 className="text-2xl font-bold text-gray-800">Our Vision</h3>
-              </div>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                To be the leading multi-service provider in Rwanda, recognized for excellence, 
-                innovation, and positive community impact through integrated service solutions.
-              </p>
-            </div>
-            
-            <div className="bg-gradient-to-br from-indigo-50 to-blue-50 p-8 rounded-2xl border border-indigo-100">
-              <div className="flex items-center mb-4">
-                <Heart className="w-8 h-8 text-indigo-600 mr-3" />
-                <h3 className="text-2xl font-bold text-gray-800">Our Mission</h3>
-              </div>
-              <p className="text-lg text-gray-700 leading-relaxed">
-                To provide comprehensive, high-quality services that empower individuals, 
-                support businesses, and contribute to community development while maintaining 
-                the highest standards of professionalism and integrity.
+              <p className="text-lg md:text-xl text-gray-700 leading-8">
+                A society where every orphaned and vulnerable child has the
+                opportunity to grow in Christ, receive quality education,
+                realise their full potential and become a responsible,
+                self-reliant citizen.
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Board of Directors */}
-        <div className={`transition-all duration-1000 delay-400 ${isVisible ? "animate-fadeInUp" : "opacity-0 translate-y-8"}`}>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">Board of Directors</h2>
-            <div className="w-24 h-1 bg-blue-600 mx-auto rounded-full"></div>
-            <p className="text-lg text-gray-600 mt-4 max-w-2xl mx-auto">
-              Led by experienced professionals committed to excellence and innovation
-            </p>
-          </div>
-          
-          <Carousel
-            opts={{
-              align: "start",
-              loop: true,
-            }}
-            className="w-full"
+          {/* MISSION */}
+
+          <div
+            className={`group relative overflow-hidden rounded-3xl bg-gradient-to-br from-blue-700 to-indigo-800 shadow-xl p-8 md:p-10 transition-all duration-1000 hover:-translate-y-2 hover:shadow-2xl ${
+              isVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 translate-x-10"
+            }`}
           >
-            <CarouselContent className="-ml-2 md:-ml-4">
-              {teamworkers.map((worker, index) => (
-                <CarouselItem
-                  key={worker.id}
-                  className="pl-2 md:pl-4 basis-full md:basis-1/2 lg:basis-1/4"
-                >
-                  <Card
-                    key={`card-${worker.id}-${animationKey}`}
-                    className={`bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl hover:scale-105 transition-all duration-800 ${
-                      isVisible
-                        ? "animate-fadeInUp"
-                        : "opacity-0 translate-y-[50px]"
-                    }`}
-                    style={{
-                      animationDelay: `${600 + index * 100}ms`,
-                      transitionDelay: isVisible
-                        ? `${600 + index * 100}ms`
-                        : "0ms",
-                    }}
-                  >
-                    <div className="w-full h-48 overflow-hidden relative group">
-                      <div className="absolute inset-0 bg-gradient-to-t from-blue-900/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                      <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
-                      <img
-                        src={worker.image || "/images/eduquality-team-placeholder.jpg"}
-                        alt={worker.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                      />
-                    </div>
-                    <CardContent className="p-4">
-                      <div className="flex items-center mb-2">
-                        <Users className="w-4 h-4 text-blue-600 mr-2" />
-                        <h3 className="text-sm font-semibold text-gray-800 group-hover:text-blue-600 transition-colors">
-                          {worker.name}
-                        </h3>
-                      </div>
-                      <p className="text-xs text-blue-600 font-medium mb-2">
-                        {worker.position}
-                      </p>
-                      <p className="text-xs text-gray-600 leading-relaxed mb-3">
-                        Leading excellence and innovation in service delivery
-                      </p>
-                      
-                      {/* Contact Options */}
-                      <div className="flex flex-col space-y-2">
-                        {worker.email && (
-                          <button
-                            onClick={() => window.open(`mailto:${worker.email}`, '_blank')}
-                            className="flex items-center text-xs bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-                          >
-                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"/>
-                              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"/>
-                            </svg>
-                            Send Email
-                          </button>
-                        )}
-                        
-                        {worker.phone && (
-                          <button
-                            onClick={() => window.open(`tel:${worker.phone}`, '_blank')}
-                            className="flex items-center text-xs bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-colors"
-                          >
-                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"/>
-                            </svg>
-                            Call Now
-                          </button>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </CarouselItem>
-              ))}
-            </CarouselContent>
-            <CarouselPrevious className="left-2 hover:scale-110 transition-transform bg-blue-600 text-white border-blue-600" />
-            <CarouselNext className="right-2 hover:scale-110 transition-transform bg-blue-600 text-white border-blue-600" />
-          </Carousel>
+            {/* Decorative background */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-24 translate-x-24" />
+
+            <div className="relative z-10">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-16 h-16 rounded-2xl bg-white/15 flex items-center justify-center">
+                  <Heart className="w-8 h-8 text-white" />
+                </div>
+
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-widest text-blue-200">
+                    Our Mission
+                  </p>
+
+                  <h3 className="text-2xl md:text-3xl font-bold text-white">
+                    The Foundation Mission
+                  </h3>
+                </div>
+              </div>
+
+              <p className="text-lg md:text-xl text-white/95 leading-8">
+                To transform the lives of orphaned and vulnerable children by
+                providing access to education, spiritual guidance, mentorship,
+                protection and holistic support through partnerships,
+                compassion and sustainable community development.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Appreciation */}
-        <div className={`transition-all duration-1000 delay-500 mt-16 ${isVisible ? "animate-fadeInUp" : "opacity-0 translate-y-8"}`}>
-          <div className="max-w-4xl mx-auto text-center bg-white p-8 rounded-2xl shadow-lg border border-blue-100">
-            <Award className="w-16 h-16 text-blue-600 mx-auto mb-6" />
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6">Our Appreciation</h2>
-            <p className="text-lg text-gray-700 leading-relaxed mb-8">
-              We extend our heartfelt gratitude to all our customers, partners, and community members 
-              who have placed their trust in MY EDUQUALITY PARTNER LTD. Your continued support 
-              inspires us to maintain the highest standards of service excellence and innovation.
-            </p>
-            <p className="text-lg text-gray-700 leading-relaxed">
-              Together, we are building a stronger, more connected community through quality services 
-              and unwavering commitment to your success and well-being.
-            </p>
+        {/* ====================================================
+            CORE VALUES HEADER
+        ==================================================== */}
+
+        <div
+          className={`text-center mb-12 transition-all duration-1000 ${
+            isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-10"
+          }`}
+        >
+          <span className="inline-flex items-center px-5 py-2 rounded-full bg-indigo-100 text-indigo-700 text-sm font-bold uppercase tracking-widest mb-4">
+            What Guides Us
+          </span>
+
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-gray-900 mb-5">
+            Our Core Values
+          </h2>
+
+          <div className="w-24 h-1.5 bg-indigo-600 mx-auto rounded-full mb-5" />
+
+          <p className="max-w-3xl mx-auto text-lg text-gray-600 leading-relaxed">
+            These values guide how we serve children, work with communities,
+            manage resources and build partnerships.
+          </p>
+        </div>
+
+        {/* ====================================================
+            CORE VALUES GRID
+        ==================================================== */}
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {CORE_VALUES.map((value, index) => {
+            const Icon = value.icon;
+
+            return (
+              <div
+                key={value.number}
+                className={`group relative bg-white rounded-2xl border border-gray-100 shadow-md p-7 transition-all duration-700 hover:-translate-y-2 hover:shadow-2xl ${
+                  isVisible
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-10"
+                }`}
+                style={{
+                  transitionDelay: `${index * 80}ms`,
+                }}
+              >
+                {/* Number */}
+                <div className="absolute top-5 right-5 text-5xl font-black text-blue-50 group-hover:text-blue-100 transition-colors">
+                  {String(value.number).padStart(2, "0")}
+                </div>
+
+                {/* Icon */}
+                <div className="relative w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center mb-5 group-hover:bg-blue-600 transition-colors duration-300">
+                  <Icon className="w-7 h-7 text-blue-600 group-hover:text-white transition-colors duration-300" />
+                </div>
+
+                {/* Title */}
+                <h3 className="relative text-xl font-bold text-gray-900 mb-3 group-hover:text-blue-700 transition-colors">
+                  {value.title}
+                </h3>
+
+                {/* Bible verse */}
+                {value.verse && (
+                  <div className="relative mb-4 p-3 rounded-xl bg-blue-50 border-l-4 border-blue-500">
+                    <p className="text-sm italic text-blue-800 leading-relaxed">
+                      {value.verse}
+                    </p>
+                  </div>
+                )}
+
+                {/* Description */}
+                <p className="relative text-gray-600 leading-7">
+                  {value.description}
+                </p>
+
+                {/* Bottom line */}
+                <div className="mt-6 h-1 w-10 rounded-full bg-blue-600 group-hover:w-20 transition-all duration-300" />
+              </div>
+            );
+          })}
+        </div>
+
+        {/* ====================================================
+            CLOSING STATEMENT
+        ==================================================== */}
+
+        <div
+          className={`mt-20 transition-all duration-1000 ${
+            isVisible
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-10"
+          }`}
+        >
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-900 via-blue-800 to-indigo-900 p-8 md:p-12 text-center shadow-2xl">
+            {/* Decorations */}
+            <div className="absolute top-0 left-0 w-40 h-40 rounded-full bg-white/5 -translate-x-20 -translate-y-20" />
+
+            <div className="absolute bottom-0 right-0 w-60 h-60 rounded-full bg-white/5 translate-x-20 translate-y-20" />
+
+            <div className="relative z-10">
+              <div className="w-16 h-16 mx-auto mb-6 rounded-full bg-white/10 border border-white/20 flex items-center justify-center">
+                <Heart className="w-8 h-8 text-white" />
+              </div>
+
+              <h3 className="text-2xl md:text-3xl font-bold text-white mb-5">
+                Together, We Can Make a Difference
+              </h3>
+
+              <p className="max-w-3xl mx-auto text-lg text-white/90 leading-8">
+                Through faith, compassion, education, protection and
+                empowerment, NIBEZA FOUNDATION works toward a future where
+                every orphaned and vulnerable child has the opportunity to
+                thrive and contribute positively to society.
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
+

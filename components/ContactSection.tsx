@@ -102,10 +102,9 @@ export default function ContactSection() {
                 : "opacity-0 translate-y-[30px]"
             }`}
           >
-            Whether you need business services, beauty care, 
-            delivery solutions, or have questions about our charitable activities, this is the place to
-            reach us. Please fill out the form below with your details and
-            message, and we'll get back to you as soon as possible.
+            We are here to support children, families, and communities through compassionate care,
+            education support, and humanitarian outreach. Please share your message below and our team
+            will respond as soon as possible.
           </p>
         </div>
         <div className="flex items-center justify-between gap-10 md:flex-row flex-col">
@@ -122,7 +121,7 @@ export default function ContactSection() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-100 z-10"></div>
               <img
                 src="/images/contact-phone.jpg"
-                alt="Contact MY EDUQUALITY PARTNER LTD"
+                alt="Contact NIBEZA FOUNDATION"
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-100"
               />
             </div>
@@ -144,7 +143,7 @@ export default function ContactSection() {
                 {
                   icon: Mail,
                   title: "Send a Message",
-                  info: "myeduqualitypartner@gmail.com",
+                  info: "info@nibezafoundation.org",
                   delay: 1400,
                 },
               ].map((item, index) => (
