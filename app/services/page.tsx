@@ -1,4 +1,3 @@
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ServicesSection from "@/components/ServicesSection";
 import Link from "next/link";
@@ -12,8 +11,6 @@ export default function ServicesPage() {
           backgroundImage: `linear-gradient(rgba(37, 99, 235, 0.7), rgba(99, 102, 241, 0.7)), url('/images/nibeza-loim-foundation.jpg')`,
         }}
       >
-        <Header />
-
         <div className="absolute inset-0 flex items-center justify-start">
           <div className="container mx-auto px-[3rem] sm:px-[3rem] md:px-[3rem] lg:px-[4rem] max-w-7xl">
             <div className="text-white max-w-2xl pt-32">

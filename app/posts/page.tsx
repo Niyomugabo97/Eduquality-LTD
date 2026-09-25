@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
@@ -70,8 +69,6 @@ export default function ActivitiesPage() {
   if (loading) {
     return (
       <main className="min-h-screen">
-        <Header />
-
         <div className="container mx-auto px-4 max-w-7xl py-20">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto" />
@@ -98,8 +95,6 @@ export default function ActivitiesPage() {
             "linear-gradient(rgba(15, 23, 42, 0.75), rgba(30, 64, 175, 0.75)), url('/images/footer-bg.jpg')",
         }}
       >
-        <Header />
-
         <div className="absolute inset-0 flex items-center">
           <div className="container mx-auto px-4 sm:px-6 md:px-12 max-w-7xl">
 

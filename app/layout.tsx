@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import ConditionalHeader from "@/components/ConditionalHeader";
 
 export const metadata: Metadata = {
-  title: "MY EDUQUALITY PARTNER LTD",
-  description: "Multi-service company providing educational support, business services, beauty care, delivery solutions, and charitable activities",
-  generator: "MY EDUQUALITY PARTNER LTD",
+  title: "NIBEZA FOUNDATION",
+  description: "NIBEZA Foundation is dedicated to protecting, supporting and empowering orphaned and vulnerable children through education, spiritual guidance, mentorship, protection and community partnerships.",
+  generator: "NIBEZA FOUNDATION",
 };
 
 export default function RootLayout({
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ConditionalHeader />
         {children}
       </body>
     </html>

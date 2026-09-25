@@ -1,5 +1,4 @@
 import { requireAdminAuth } from "@/app/actions/auth";
-import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { getContacts } from "@/app/actions/contactActions";
 import LogoutButton from "../_components/logout-button";

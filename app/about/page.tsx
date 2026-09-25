@@ -1,7 +1,7 @@
 
 "use client";
 
-import Header from "@/components/Header";
+import Logo from "@/components/Logo";
 import { Mail, Phone, MapPin, Heart, Target, ShieldCheck, Sparkles, Users, BookOpen, HandHeart, CheckCircle, Lightbulb, Cross } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -121,8 +121,6 @@ export default function AboutPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-      <Header />
-
       {/* ======================================================
           HERO SECTION
       ====================================================== */}
@@ -133,22 +131,26 @@ export default function AboutPage() {
         <div className="absolute top-0 left-0 w-80 h-80 bg-white/5 rounded-full -translate-x-40 -translate-y-40" />
         <div className="absolute bottom-0 right-0 w-96 h-96 bg-white/5 rounded-full translate-x-40 translate-y-40" />
 
-        <div className="relative z-10 max-w-6xl mx-auto text-center">
+        <div className="relative z-10 max-w-6xl mx-auto flex flex-col md:flex-row items-center gap-8 md:gap-12 text-center md:text-left">
 
-          <div className="inline-flex items-center px-5 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-sm font-bold uppercase tracking-widest mb-6">
-            About NIBEZA Foundation
+          <Logo className="w-48 h-48 md:w-64 md:h-64 lg:w-72 lg:h-72 shrink-0 object-contain rounded-full bg-white p-2 shadow-2xl ring-4 ring-white/30" />
+
+          <div className="flex-1">
+            <div className="inline-flex items-center px-5 py-2 rounded-full bg-white/10 border border-white/20 backdrop-blur-md text-sm font-bold uppercase tracking-widest mb-6">
+              About NIBEZA Foundation
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6">
+              Who We Are
+            </h1>
+
+            <div className="w-24 h-1.5 bg-white mx-auto md:mx-0 rounded-full mb-7" />
+
+            <p className="text-lg sm:text-xl md:text-2xl text-blue-100 leading-relaxed max-w-4xl mx-auto md:mx-0">
+              Transforming the lives of orphaned and vulnerable children through
+              faith, education, protection, mentorship and holistic support.
+            </p>
           </div>
-
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6">
-            Who We Are
-          </h1>
-
-          <div className="w-24 h-1.5 bg-white mx-auto rounded-full mb-7" />
-
-          <p className="text-lg sm:text-xl md:text-2xl text-blue-100 leading-relaxed max-w-4xl mx-auto">
-            Transforming the lives of orphaned and vulnerable children through
-            faith, education, protection, mentorship and holistic support.
-          </p>
 
         </div>
       </section>

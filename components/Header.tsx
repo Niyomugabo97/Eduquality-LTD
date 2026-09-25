@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import SideDrawer from "./SideDrawer";
+import Logo from "./Logo";
 import { getAdminSession, logout } from "@/app/actions/auth"; // Import auth actions
 import { usePathname } from "next/navigation"; // To get current path
 
@@ -23,12 +24,15 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
   const pathname = usePathname();
+  const isFormPage = pathname === "/registration" || pathname === "/exit";
 
   const navigation = [
     { name: "Home", href: "/" },
     { name: "About Us", href: "/about" },
     { name: "Posts", href: "/posts" },
     { name: "NIBEZA Foundation", href: "/eduquality-foundation" },
+    { name: "Registration Form", href: "/registration" },
+    { name: "Exit Form", href: "/exit" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -56,7 +60,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="absolute top-0 left-0 right-0 z-50 w-full">
+      <header className="fixed top-0 left-0 right-0 z-50 w-full">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-2 px-[2rem] animate-slideDown">
           <div className="container mx-auto flex flex-wrap items-center justify-center md:justify-between">
             <div className="hidden md:flex items-center text-[12px] space-x-6 animate-fadeInLeft">
@@ -83,20 +87,23 @@ export default function Header() {
         </div>
         <nav
           className={`top-0 left-0 right-0 z-40 transition-all duration-100 animate-slideDown px-[2rem] ${
-            scrolled ? "bg-gradient-to-r from-blue-800/95 to-indigo-800/95 backdrop-blur-sm fixed" : "bg-transparent"
+            scrolled || isFormPage
+              ? "bg-gradient-to-r from-blue-800/95 to-indigo-800/95 backdrop-blur-sm"
+              : "bg-transparent"
           }`}
         >
           <div className="container mx-auto">
             <div className="flex justify-between items-center py-4">
               <Link
                 href="/"
-                className="flex items-center space-x-2 text-white animate-fadeInLeft animation-delay-300"
+                className="flex shrink-0 items-center space-x-2 text-white animate-fadeInLeft animation-delay-300"
               >
+                <Logo />
                 <span className="text-[16px] hover:text-blue-300 transition-colors font-semibold">
                   NIBEZA FOUNDATION
                 </span>
               </Link>
-              <div className="hidden lg:flex items-center space-x-8 animate-fadeInUp animation-delay-500">
+              <div className="hidden xl:flex xl:ml-10 xl:mr-10 items-center space-x-8 animate-fadeInUp animation-delay-500">
                 {navigation.map((item, index) => (
                   <Link
                     key={item.name}
@@ -122,13 +129,13 @@ export default function Header() {
                   {isAdminLoggedIn ? (
                     <Button
                       onClick={handleLogout}
-                      className="hidden lg:flex bg-transparent border-blue-400 rounded-[20px] text-white text-sm py-1 px-4 bg-blue-600 hover:bg-blue-500 hover:scale-105 transition-all duration-100 h-auto min-h-0 items-center"
+                      className="hidden xl:flex bg-transparent border-blue-400 rounded-[20px] text-white text-sm py-1 px-4 bg-blue-600 hover:bg-blue-500 hover:scale-105 transition-all duration-100 h-auto min-h-0 items-center"
                     >
                       <LogOut className="w-4 h-4 mr-2" /> Logout
                     </Button>
                   ) : (
                     <Link href={"/login"}>
-                      <Button className="hidden lg:block bg-transparent border-blue-400 rounded-[20px] text-white text-sm py-1 px-4 bg-blue-600 hover:bg-blue-500 hover:scale-105 transition-all duration-100 h-auto min-h-0">
+                      <Button className="hidden xl:block bg-transparent border-blue-400 rounded-[20px] text-white text-sm py-1 px-4 bg-blue-600 hover:bg-blue-500 hover:scale-105 transition-all duration-100 h-auto min-h-0">
                         Login/Signup
                       </Button>
                     </Link>
@@ -137,12 +144,12 @@ export default function Header() {
                 <div>
                   <button
                     onClick={() => setIsSideDrawerOpen(true)}
-                    className="hidden lg:block"
+                    className="hidden xl:block"
                   >
                     <AlignRight className="w-10 h-5 text-white cursor-pointer hover:text-blue-300 hover:scale-110 transition-all duration-100" />
                   </button>
                   <button
-                    className="lg:hidden text-white"
+                    className="xl:hidden text-white"
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                   >
                     {isMenuOpen ? (
@@ -155,7 +162,7 @@ export default function Header() {
               </div>
             </div>
             {isMenuOpen && (
-              <div className="lg:hidden py-4 border-t border-blue-400/30 bg-gradient-to-r from-blue-800/95 to-indigo-800/95 backdrop-blur-sm animate-slideDown">
+              <div className="xl:hidden py-4 border-t border-blue-400/30 bg-gradient-to-r from-blue-800/95 to-indigo-800/95 backdrop-blur-sm animate-slideDown">
                 <div className="flex flex-col space-y-4">
                   {navigation.map((item, index) => (
                     <Link
