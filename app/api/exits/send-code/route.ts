@@ -11,14 +11,13 @@ async function hashOtp(otp: string): Promise<string> {
   return createHash("sha256").update(otp).digest("hex");
 }
 
-const resend = new Resend(
-  process.env.RESEND_API_KEY
-);
-
 export async function POST(
   request: Request
 ) {
   try {
+    const resend = new Resend(
+      process.env.RESEND_API_KEY
+    );
     const { exitId } =
       await request.json();
 
