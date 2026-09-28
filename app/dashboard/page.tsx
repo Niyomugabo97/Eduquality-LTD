@@ -327,17 +327,6 @@ export default function DashboardPage() {
                 <Users className="w-5 h-5" />
                 <span className="font-medium">Team</span>
               </button>
-              <button
-                onClick={() => { setActiveTab("posts"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "posts" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <Newspaper className="w-5 h-5" />
-                <span className="font-medium">Publish Post</span>
-              </button>
             </nav>
           </div>
         </div>
@@ -368,10 +357,6 @@ export default function DashboardPage() {
             <TabsTrigger value="team" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Team</span>
-            </TabsTrigger>
-            <TabsTrigger value="posts" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
-              <Newspaper className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Posts</span>
             </TabsTrigger>
           </TabsList>
 
