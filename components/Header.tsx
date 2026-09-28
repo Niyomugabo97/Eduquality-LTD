@@ -103,12 +103,12 @@ export default function Header() {
                   NIBEZA FOUNDATION
                 </span>
               </Link>
-              <div className="hidden xl:flex xl:ml-10 xl:mr-10 items-center space-x-8 animate-fadeInUp animation-delay-500">
+              <div className="hidden xl:flex xl:mx-4 items-center space-x-4 whitespace-nowrap animate-fadeInUp animation-delay-500">
                 {navigation.map((item, index) => (
                   <Link
                     key={item.name}
                     href={item.href}
-                    className="text-white hover:text-blue-300 text-[16px] transition-colors animate-fadeInUp"
+                    className="shrink-0 text-white hover:text-blue-300 text-[14px] transition-colors animate-fadeInUp"
                     style={{ animationDelay: `${600 + index * 100}ms` }}
                   >
                     {item.name}
@@ -117,7 +117,7 @@ export default function Header() {
                 {isAdminLoggedIn && (
                   <Link
                     href="/dashboard"
-                    className="text-white hover:text-blue-300 text-[16px] transition-colors animate-fadeInUp"
+                    className="shrink-0 text-white hover:text-blue-300 text-[14px] transition-colors animate-fadeInUp"
                     style={{ animationDelay: `200ms` }}
                   >
                     Dashboard

@@ -9,10 +9,13 @@ cloudinary.config({
 });
 
 // Helper function to upload image to Cloudinary
-export async function uploadImageToCloudinary(file: File | Buffer): Promise<string> {
+export async function uploadImageToCloudinary(
+  file: File | Buffer,
+  folder = 'product-images'
+): Promise<string> {
   return new Promise((resolve, reject) => {
     const uploadOptions = {
-      folder: 'product-images',
+      folder,
       resource_type: 'image' as const,
       quality: 'auto',
       fetch_format: 'auto',

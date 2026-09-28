@@ -1,47 +1,46 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { requireAdminAuth } from "@/app/actions/auth";
 import LogoutButton from "./_components/logout-button";
 import AdminStats from "./_components/admin-stats";
 import TeamManagement from "./_components/team-management";
-import OrderManagement from "./_components/order-management";
-import OrderSummary from "./_components/order-summary";
-import RecordsTable from "./_components/records-table";
-import ProductPriceCalculator from "../user/dashboard/_components/product-price-calculator";
-import UserFeedback from "../user/dashboard/_components/user-feedback";
-import RequestedProductsManager from "../user/dashboard/_components/requested-products-manager";
+import FoundationRecords from "./_components/foundation-records";
 import { getRegistrations } from "../actions/register";
-import { getAllProductsForAdmin, getAdminStats, deleteProductByAdmin, toggleProductVisibility } from "../actions/admin";
+import { getAdminStats } from "../actions/admin";
 import { getAllTeamMembers } from "../actions/team";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { 
   BarChart3, 
   Users2, 
   FileText, 
-  Package, 
-  Truck,
   Settings,
   Plus,
-  Edit,
-  Trash2,
-  Check,
   X,
-  TrendingUp,
   UserCheck,
-  Eye,
-  EyeOff,
   Award,
   Menu,
   Users,
-  MessageSquare,
-  Calculator,
-  ShoppingBag,
-  MessageCircle,
-  Download
+  Newspaper,
+  CalendarDays,
+  MapPin,
+  Send,
+  Image as ImageIcon,
+  Pencil,
+  Trash2,
 } from "lucide-react";
+
+interface DashboardPost {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location?: string;
+  media?: { images?: string[]; mainImage?: string };
+}
 
 const allServices = [
   "Management Consultancy",
@@ -59,37 +58,51 @@ const allServices = [
 
 export default function DashboardPage() {
   const [registrations, setRegistrations] = useState<any[]>([]);
-  const [products, setProducts] = useState<any[]>([]);
   const [teamMembers, setTeamMembers] = useState<any[]>([]);
   const [stats, setStats] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isDeleting, setIsDeleting] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
-  const [deliveryRequests, setDeliveryRequests] = useState<any[]>([]);
-  const [services, setServices] = useState(allServices);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [postForm, setPostForm] = useState({
+    title: "",
+    description: "",
+    date: "",
+    location: "",
+    imageUrl: "",
+  });
+  const [posts, setPosts] = useState<DashboardPost[]>([]);
+  const [editingPostId, setEditingPostId] = useState<string | null>(null);
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [deletingPostId, setDeletingPostId] = useState<string | null>(null);
+  const [publishing, setPublishing] = useState(false);
+  const [publishMessage, setPublishMessage] = useState("");
 
   useEffect(() => {
     fetchData();
+    fetchPosts();
   }, []);
+
+  const fetchPosts = async () => {
+    try {
+      const response = await fetch("/api/posts", { cache: "no-store" });
+      const result = await response.json();
+      if (response.ok && result.success) setPosts(result.data || []);
+    } catch (error) {
+      console.error("Error fetching posts:", error);
+    }
+  };
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch data with limits for faster loading
-      const [registrationsRes, productsRes, statsRes, teamRes] = await Promise.all([
+      const [registrationsRes, statsRes, teamRes] = await Promise.all([
         getRegistrations(),
-        getAllProductsForAdmin(50), // Limit to 50 products
         getAdminStats(),
-        getAllTeamMembers(20), // Limit to 20 team members
+        getAllTeamMembers(20),
       ]);
 
       if (registrationsRes.success) {
         setRegistrations(registrationsRes.data || []);
-      }
-
-      if (productsRes.success) {
-        setProducts(productsRes.data || []);
       }
 
       if (statsRes.success) {
@@ -99,138 +112,95 @@ export default function DashboardPage() {
       if (teamRes.success) {
         setTeamMembers(teamRes.data || []);
       }
-
-      // Fetch real orders from API
-      try {
-        const ordersResponse = await fetch('/api/orders?limit=50', {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
-        
-        if (ordersResponse.ok) {
-          const ordersData = await ordersResponse.json();
-          if (ordersData.success && ordersData.data) {
-            // Transform the orders to match the expected format
-            const transformedOrders = ordersData.data.map((order: any) => ({
-              id: order.id,
-              orderNumber: order.orderNumber,
-              customerName: order.customerName,
-              customerEmail: order.customerEmail,
-              customerPhone: order.customerPhone || 'N/A',
-              customerAddress: order.deliveryAddress || 'N/A',
-              customerCity: 'N/A',
-              customerProvince: 'N/A',
-              customerIdNumber: 'N/A',
-              serviceType: order.serviceType,
-              description: order.description,
-              quantity: order.quantity || 1,
-              price: order.price || 0,
-              status: order.status.toLowerCase(),
-              priority: order.priority.toLowerCase(),
-              deliveryAddress: order.deliveryAddress || 'N/A',
-              notes: order.notes || '',
-              createdAt: order.createdAt,
-              updatedAt: order.updatedAt,
-              assignedTo: order.assignedTo || '',
-              estimatedDelivery: order.estimatedDelivery || '',
-              actualDelivery: order.actualDelivery || '',
-            }));
-            setDeliveryRequests(transformedOrders);
-          } else {
-            console.error("API returned error:", ordersData);
-            setDeliveryRequests([]);
-          }
-        } else {
-          console.error("Failed to fetch orders:", ordersResponse.statusText);
-          setDeliveryRequests([]);
-        }
-      } catch (error) {
-        console.error("Error fetching orders from API:", error);
-        setDeliveryRequests([]);
-      }
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
-      // Set empty arrays to prevent undefined errors
       setRegistrations([]);
-      setProducts([]);
       setTeamMembers([]);
       setStats(null);
-      setDeliveryRequests([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleDeleteProduct = async (productId: string) => {
-    setIsDeleting(true);
+  const handlePublishPost = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setPublishMessage("");
+
+    if (!postForm.title.trim() || !postForm.description.trim()) {
+      setPublishMessage("Please provide a title and description before publishing.");
+      return;
+    }
+
+    setPublishing(true);
     try {
-      const result = await deleteProductByAdmin(productId);
-      if (result.success) {
-        // Refresh data
-        await fetchData();
-        alert(result.message);
-      } else {
-        alert(result.message || "Failed to delete product");
+      const formData = new FormData();
+      formData.append("title", postForm.title);
+      formData.append("description", postForm.description);
+      formData.append("date", postForm.date || new Date().toISOString().slice(0, 10));
+      formData.append("location", postForm.location);
+      formData.append("imageUrl", postForm.imageUrl);
+      if (selectedImage) formData.append("image", selectedImage);
+
+      const wasEditing = Boolean(editingPostId);
+      const response = await fetch(editingPostId ? `/api/posts/${editingPostId}` : "/api/posts", {
+        method: editingPostId ? "PATCH" : "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Failed to publish post.");
       }
-    } catch (error) {
-      console.error("Error deleting product:", error);
-      alert("An error occurred while deleting the product");
+
+      setPostForm({ title: "", description: "", date: "", location: "", imageUrl: "" });
+      setEditingPostId(null);
+      setSelectedImage(null);
+      setPublishMessage(wasEditing ? "Post updated successfully." : "Post published successfully to the public page.");
+      await fetchPosts();
+    } catch (error: any) {
+      console.error("Error publishing post:", error);
+      setPublishMessage(error.message || "Failed to publish post.");
     } finally {
-      setIsDeleting(false);
+      setPublishing(false);
     }
   };
 
-  const handleApproveProduct = async (productId: string) => {
-    try {
-      // Implement approve product logic
-      alert("Product approved successfully!");
-      await fetchData();
-    } catch (error) {
-      console.error("Error approving product:", error);
-      alert("Failed to approve product");
-    }
+  const handleEditPost = (post: DashboardPost) => {
+    setEditingPostId(post.id);
+    setSelectedImage(null);
+    setPostForm({
+      title: post.title,
+      description: post.description,
+      date: post.date?.slice(0, 10) || "",
+      location: post.location || "",
+      imageUrl: post.media?.mainImage || post.media?.images?.[0] || "",
+    });
+    setPublishMessage("");
+    setActiveTab("posts");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const handleToggleProductVisibility = async (productId: string, currentHiddenStatus: boolean) => {
+  const handleDeletePost = async (post: DashboardPost) => {
+    if (!window.confirm(`Delete “${post.title}”? This cannot be undone.`)) return;
+    setDeletingPostId(post.id);
+    setPublishMessage("");
     try {
-      const result = await toggleProductVisibility(productId, !currentHiddenStatus);
-      if (result.success) {
-        await fetchData();
-        alert(result.message);
-      } else {
-        alert(result.message || "Failed to update product visibility");
+      const response = await fetch(`/api/posts/${post.id}`, { method: "DELETE" });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.message || "Failed to delete post.");
+      setPosts((currentPosts) => currentPosts.filter((item) => item.id !== post.id));
+      if (editingPostId === post.id) {
+        setEditingPostId(null);
+        setPostForm({ title: "", description: "", date: "", location: "", imageUrl: "" });
+        setSelectedImage(null);
       }
+      setPublishMessage("Post deleted successfully.");
     } catch (error) {
-      console.error("Error toggling product visibility:", error);
-      alert("An error occurred while updating product visibility");
+      setPublishMessage(error instanceof Error ? error.message : "Failed to delete post.");
+    } finally {
+      setDeletingPostId(null);
     }
-  };
-
-  const handleUpdateDeliveryStatus = async (requestId: string, status: string) => {
-    try {
-      // Implement delivery status update logic
-      setDeliveryRequests(prev => 
-        prev.map(req => 
-          req.id === parseInt(requestId) ? { ...req, status } : req
-        )
-      );
-      alert(`Delivery status updated to ${status}`);
-    } catch (error) {
-      console.error("Error updating delivery status:", error);
-      alert("Failed to update delivery status");
-    }
-  };
-
-  const handleAddService = (newService: string) => {
-    setServices(prev => [...prev, newService]);
-    alert("Service added successfully!");
-  };
-
-  const handleDeleteService = (serviceIndex: number) => {
-    setServices(prev => prev.filter((_, index) => index !== serviceIndex));
-    alert("Service deleted successfully!");
   };
 
   if (loading) {
@@ -255,9 +225,9 @@ export default function DashboardPage() {
             <div>
               <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 flex items-center">
                 <Settings className="w-6 h-6 sm:w-8 sm:h-8 mr-2 sm:mr-3" />
-                Admin Dashboard
+                NIBEZA Foundation Dashboard
               </h1>
-              <p className="text-blue-100 text-sm sm:text-lg">Full System Control Panel</p>
+              <p className="text-blue-100 text-sm sm:text-lg">Beneficiary care and programme administration</p>
             </div>
             <LogoutButton />
           </div>
@@ -314,15 +284,15 @@ export default function DashboardPage() {
                 <span className="font-medium">Users</span>
               </button>
               <button
-                onClick={() => { setActiveTab("products"); setSidebarOpen(false); }}
+                onClick={() => { setActiveTab("posts"); setSidebarOpen(false); }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "products" 
+                  activeTab === "posts" 
                     ? "bg-blue-600 text-white" 
                     : "hover:bg-gray-100 text-gray-700"
                 }`}
               >
-                <Package className="w-5 h-5" />
-                <span className="font-medium">Products</span>
+                <Newspaper className="w-5 h-5" />
+                <span className="font-medium">Publish Post</span>
               </button>
               <button
                 onClick={() => { setActiveTab("registrations"); setSidebarOpen(false); }}
@@ -333,7 +303,18 @@ export default function DashboardPage() {
                 }`}
               >
                 <FileText className="w-5 h-5" />
-                <span className="font-medium">Registrations</span>
+                <span className="font-medium">Beneficiaries</span>
+              </button>
+              <button
+                onClick={() => { setActiveTab("exits"); setSidebarOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                  activeTab === "exits"
+                    ? "bg-blue-600 text-white"
+                    : "hover:bg-gray-100 text-gray-700"
+                }`}
+              >
+                <FileText className="w-5 h-5" />
+                <span className="font-medium">Exit Requests</span>
               </button>
               <button
                 onClick={() => { setActiveTab("team"); setSidebarOpen(false); }}
@@ -347,59 +328,15 @@ export default function DashboardPage() {
                 <span className="font-medium">Team</span>
               </button>
               <button
-                onClick={() => { setActiveTab("orders"); setSidebarOpen(false); }}
+                onClick={() => { setActiveTab("posts"); setSidebarOpen(false); }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "orders" 
+                  activeTab === "posts" 
                     ? "bg-blue-600 text-white" 
                     : "hover:bg-gray-100 text-gray-700"
                 }`}
               >
-                <Truck className="w-5 h-5" />
-                <span className="font-medium">Orders</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab("calculator"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "calculator" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <Calculator className="w-5 h-5" />
-                <span className="font-medium">Price Calculator</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab("feedback"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "feedback" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <MessageSquare className="w-5 h-5" />
-                <span className="font-medium">Feedback</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab("requests"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "requests" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <FileText className="w-5 h-5" />
-                <span className="font-medium">Requests</span>
-              </button>
-              <button
-                onClick={() => { setActiveTab("summary"); setSidebarOpen(false); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                  activeTab === "summary" 
-                    ? "bg-blue-600 text-white" 
-                    : "hover:bg-gray-100 text-gray-700"
-                }`}
-              >
-                <Download className="w-5 h-5" />
-                <span className="font-medium">Order Summary</span>
+                <Newspaper className="w-5 h-5" />
+                <span className="font-medium">Publish Post</span>
               </button>
             </nav>
           </div>
@@ -407,7 +344,7 @@ export default function DashboardPage() {
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4 sm:space-y-6">
           {/* Desktop Tabs - Hidden on Mobile */}
-          <TabsList className="hidden sm:grid w-full grid-cols-3 md:grid-cols-9 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2 overflow-x-auto">
+          <TabsList className="hidden sm:grid w-full grid-cols-3 md:grid-cols-6 xl:grid-cols-11 gap-1 sm:gap-2 bg-white rounded-lg sm:rounded-xl shadow-md p-1 sm:p-2 overflow-x-auto">
             <TabsTrigger value="overview" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <BarChart3 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Overview</span>
@@ -416,37 +353,25 @@ export default function DashboardPage() {
               <Users2 className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Users</span>
             </TabsTrigger>
-            <TabsTrigger value="products" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
-              <Package className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Products</span>
+            <TabsTrigger value="posts" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
+              <Newspaper className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Publish Post</span>
             </TabsTrigger>
             <TabsTrigger value="registrations" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <FileText className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Registrations</span>
+              <span className="text-center">Beneficiaries</span>
+            </TabsTrigger>
+            <TabsTrigger value="exits" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
+              <FileText className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Exit Requests</span>
             </TabsTrigger>
             <TabsTrigger value="team" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
               <Users className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
               <span className="text-center">Team</span>
             </TabsTrigger>
-            <TabsTrigger value="orders" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
-              <Truck className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Orders</span>
-            </TabsTrigger>
-            <TabsTrigger value="calculator" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
-              <Calculator className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Calculator</span>
-            </TabsTrigger>
-            <TabsTrigger value="feedback" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
-              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Feedback</span>
-            </TabsTrigger>
-            <TabsTrigger value="requests" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
-              <FileText className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Requests</span>
-            </TabsTrigger>
-            <TabsTrigger value="summary" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
-              <Download className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
-              <span className="text-center">Summary</span>
+            <TabsTrigger value="posts" className="text-xs sm:text-sm flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 data-[state=active]:bg-blue-600 data-[state=active]:text-white rounded-lg py-2 sm:py-3 px-1 sm:px-4 min-w-0">
+              <Newspaper className="w-3 h-3 sm:w-4 sm:h-4 flex-shrink-0" />
+              <span className="text-center">Posts</span>
             </TabsTrigger>
           </TabsList>
 
@@ -460,6 +385,14 @@ export default function DashboardPage() {
                 recentProducts={stats.recentProducts}
               />
             )}
+          </TabsContent>
+
+          <TabsContent value="registrations" className="space-y-4 sm:space-y-6">
+            <FoundationRecords type="beneficiaries" />
+          </TabsContent>
+
+          <TabsContent value="exits" className="space-y-4 sm:space-y-6">
+            <FoundationRecords type="exits" />
           </TabsContent>
 
           {/* Users Tab */}
@@ -509,276 +442,145 @@ export default function DashboardPage() {
             </Card>
           </TabsContent>
 
-          {/* Products Tab */}
-          <TabsContent value="products" className="space-y-4 sm:space-y-6">
+          {/* Publish Post Tab */}
+          <TabsContent value="posts" className="space-y-4 sm:space-y-6">
             <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
                 <CardTitle className="flex items-center text-lg sm:text-xl">
-                  <Package className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                  Product Publications
+                  <Newspaper className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
+                  Publish Activity or Event
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
-                <div className="space-y-3 sm:space-y-4">
-                  {products.map((product) => (
-                    <div key={product.id} className={`flex flex-col sm:flex-row items-start gap-3 sm:gap-4 p-3 sm:p-4 border rounded-lg hover:shadow-lg transition-all duration-300 ${product.hidden ? 'border-orange-200 bg-gradient-to-r from-orange-50 to-yellow-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`}>
-                      {/* Product Image */}
-                      <div className="flex-shrink-0 w-full sm:w-20">
-                        {product.mainImage || (product.images && product.images.length > 0) ? (
-                          <div className="w-full sm:w-20 h-16 sm:h-20 rounded-lg overflow-hidden bg-gray-100 border-2 border-gray-200 shadow-sm">
-                            <img
-                              src={product.mainImage || product.images[0]}
-                              alt={product.title}
-                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        ) : (
-                          <div className="w-full sm:w-20 h-16 sm:h-20 rounded-lg bg-gradient-to-br from-gray-100 to-gray-200 border-2 border-gray-300 flex items-center justify-center shadow-sm">
-                            <Package className="w-6 h-6 sm:w-8 sm:h-8 text-gray-400" />
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Product Info */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-2">
-                          <h4 className="font-semibold text-gray-800 text-sm sm:text-base truncate flex-1">{product.title}</h4>
-                          {product.hidden && (
-                            <span className="px-2 py-1 bg-orange-100 text-orange-800 text-xs rounded-full font-medium shrink-0 border border-orange-200">
-                              Hidden
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2">{product.description}</p>
-                        
-                        {/* User Info */}
-                        <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-gray-600 mb-2">
-                          <div className="flex items-center gap-1 bg-blue-50 px-2 py-1 rounded-full">
-                            <Users2 className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600" />
-                            <span className="text-blue-700 font-medium">
-                              {product.user?.name || 'Unknown User'}
-                            </span>
-                          </div>
-                          <span className="text-gray-400">•</span>
-                          <span className="bg-green-50 text-green-700 px-2 py-1 rounded-full font-medium">
-                            {product.price ? `RWF ${product.price.toLocaleString()}` : 'No price'}
-                          </span>
-                        </div>
-                        
-                        {/* Additional Info */}
-                        <div className="flex flex-wrap items-center gap-2 text-xs text-gray-500 mb-3">
-                          <span className="bg-gray-100 px-2 py-1 rounded">ID: {product.id.slice(0, 8)}...</span>
-                          <span className="text-gray-400">•</span>
-                          <span className="bg-gray-100 px-2 py-1 rounded">{new Date(product.createdAt).toLocaleDateString()}</span>
-                          <span className="text-gray-400">•</span>
-                          <span className={`px-2 py-1 rounded-full font-medium ${
-                            product.available 
-                              ? 'bg-green-100 text-green-800 border border-green-200' 
-                              : 'bg-red-100 text-red-800 border border-red-200'
-                          }`}>
-                            {product.available ? '✓ Available' : '✗ Not Available'}
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div className="flex flex-row sm:flex-col gap-2 shrink-0 w-full sm:w-auto">
-                        <Button
-                          onClick={() => handleApproveProduct(product.id)}
-                          className="bg-green-600 hover:bg-green-700 flex-1 sm:flex-initial shadow-md hover:shadow-lg transition-all duration-200"
-                          size="sm"
-                          title="Approve Product"
-                        >
-                          <Check className="w-4 h-4" />
-                          <span className="hidden sm:inline ml-1">Approve</span>
-                        </Button>
-                        <Button
-                          onClick={() => handleToggleProductVisibility(product.id, product.hidden)}
-                          variant={product.hidden ? "default" : "outline"}
-                          size="sm"
-                          className={product.hidden 
-                            ? "bg-orange-600 hover:bg-orange-700 text-white flex-1 sm:flex-initial shadow-md hover:shadow-lg transition-all duration-200" 
-                            : "border-2 border-orange-200 text-orange-600 hover:bg-orange-50 flex-1 sm:flex-initial transition-all duration-200"
-                          }
-                          title={product.hidden ? "Unhide Product" : "Hide Product"}
-                        >
-                          {product.hidden ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                          <span className="hidden sm:inline ml-1">{product.hidden ? 'Unhide' : 'Hide'}</span>
-                        </Button>
-                        <Button
-                          onClick={() => handleDeleteProduct(product.id)}
-                          variant="destructive"
-                          size="sm"
-                          disabled={isDeleting}
-                          title="Delete Product"
-                          className="flex-1 sm:flex-initial shadow-md hover:shadow-lg transition-all duration-200"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                          <span className="hidden sm:inline ml-1">Delete</span>
-                        </Button>
-                      </div>
+                <form onSubmit={handlePublishPost} className="space-y-5">
+                  <div className="grid gap-5 md:grid-cols-2">
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-sm font-medium text-gray-700">Title</label>
+                      <Input
+                        value={postForm.title}
+                        onChange={(event) => setPostForm({ ...postForm, title: event.target.value })}
+                        placeholder="e.g. School Support for Children in Need"
+                        className="h-11"
+                      />
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          {/* Delivery Tab */}
-          <TabsContent value="delivery" className="space-y-4 sm:space-y-6">
-            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
-                <CardTitle className="flex items-center text-lg sm:text-xl">
-                  <Truck className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                  Delivery Requests
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 sm:p-6">
-                <div className="space-y-3 sm:space-y-4">
-                  {deliveryRequests.map((request) => (
-                    <div key={request.id} className="flex flex-col sm:flex-row items-start justify-between gap-3 sm:gap-4 p-3 sm:p-4 border border-gray-200 rounded-lg bg-gradient-to-r from-gray-50 to-blue-50 hover:shadow-lg transition-all duration-300">
-                      <div className="flex-1 min-w-0">
-                        <h4 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 flex items-center">
-                          <Truck className="w-4 h-4 mr-2 text-blue-600" />
-                          {request.customer}
-                        </h4>
-                        <p className="text-xs sm:text-sm text-gray-600 mb-1 flex items-center">
-                          <Package className="w-3 h-3 mr-1 text-gray-400" />
-                          {request.product}
-                        </p>
-                        <p className="text-xs text-gray-500 flex items-center">
-                          <span className="w-2 h-2 bg-blue-400 rounded-full mr-2"></span>
-                          {request.date}
-                        </p>
-                      </div>
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
-                        <span className={`px-3 py-1 rounded-full text-xs sm:text-sm font-medium w-full sm:w-auto text-center border shadow-sm ${
-                          request.status === 'delivered' 
-                            ? 'bg-green-100 text-green-800 border-green-200' 
-                            : request.status === 'in-transit' 
-                            ? 'bg-yellow-100 text-yellow-800 border-yellow-200'
-                            : 'bg-red-100 text-red-800 border-red-200'
-                        }`}>
-                          {request.status === 'delivered' ? '✓ Delivered' : 
-                           request.status === 'in-transit' ? '🚚 In Transit' : 
-                           '⏳ Pending'}
-                        </span>
-                        <select
-                          value={request.status}
-                          onChange={(e) => handleUpdateDeliveryStatus(request.id.toString(), e.target.value)}
-                          className="px-2 sm:px-3 py-1 sm:py-2 border border-gray-300 rounded-lg text-xs sm:text-sm w-full sm:w-auto bg-white shadow-sm hover:shadow-md transition-shadow"
-                        >
-                          <option value="pending">⏳ Pending</option>
-                          <option value="in-transit">🚚 In Transit</option>
-                          <option value="delivered">✓ Delivered</option>
-                        </select>
-                      </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-sm font-medium text-gray-700">Description</label>
+                      <Textarea
+                        value={postForm.description}
+                        onChange={(event) => setPostForm({ ...postForm, description: event.target.value })}
+                        placeholder="Write the event or activity summary here..."
+                        rows={6}
+                        className="resize-none"
+                      />
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
-          {/* Orders Tab */}
-          <TabsContent value="orders" className="space-y-4 sm:space-y-6">
-            <OrderManagement onUpdate={fetchData} />
-          </TabsContent>
-
-          {/* Price Calculator Tab */}
-          <TabsContent value="calculator" className="space-y-4 sm:space-y-6">
-            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
-                <CardTitle className="flex items-center text-lg sm:text-xl">
-                  <Calculator className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                  Price Calculator
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 sm:p-6">
-                <ProductPriceCalculator />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Feedback Tab */}
-          <TabsContent value="feedback" className="space-y-4 sm:space-y-6">
-            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
-                <CardTitle className="flex items-center text-lg sm:text-xl">
-                  <MessageSquare className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                  User Feedback
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 sm:p-6">
-                <UserFeedback userId="admin" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Requests Tab */}
-          <TabsContent value="requests" className="space-y-4 sm:space-y-6">
-            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
-                <CardTitle className="flex items-center text-lg sm:text-xl">
-                  <FileText className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                  Product Requests
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 sm:p-6">
-                <RequestedProductsManager userId="admin" />
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Order Summary Tab */}
-          <TabsContent value="summary" className="space-y-4 sm:space-y-6">
-            <OrderSummary orders={deliveryRequests} onUpdate={fetchData} />
-          </TabsContent>
-
-          {/* Services Tab */}
-          <TabsContent value="services" className="space-y-4 sm:space-y-6">
-            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
-              <CardHeader className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 sm:p-6">
-                <CardTitle className="flex items-center text-lg sm:text-xl">
-                  <Settings className="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3" />
-                  Manage Services
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4 sm:p-6">
-                <div className="space-y-3 sm:space-y-4">
-                  {services.map((service, index) => (
-                    <div key={index} className="flex flex-col sm:flex-row items-center justify-between gap-2 p-3 sm:p-4 border border-gray-200 rounded-lg bg-gradient-to-r from-gray-50 to-indigo-50 hover:shadow-md transition-all duration-300">
-                      <span className="font-medium text-gray-800 text-sm sm:text-base flex items-center">
-                        <Settings className="w-4 h-4 mr-2 text-indigo-600" />
-                        {service}
-                      </span>
-                      <Button
-                        onClick={() => handleDeleteService(index)}
-                        variant="destructive"
-                        size="sm"
-                        className="w-full sm:w-auto shadow-md hover:shadow-lg transition-all duration-200"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span className="hidden sm:inline ml-1">Delete</span>
-                      </Button>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <CalendarDays className="h-4 w-4 text-blue-600" />
+                        Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={postForm.date}
+                        onChange={(event) => setPostForm({ ...postForm, date: event.target.value })}
+                        className="h-11"
+                      />
                     </div>
-                  ))}
-                  <div className="mt-4 sm:mt-6 p-4 sm:p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200">
-                    <Button
-                      onClick={() => {
-                        const newService = prompt("Enter new service name:");
-                        if (newService) handleAddService(newService);
-                      }}
-                      className="bg-blue-600 hover:bg-blue-700 w-full sm:w-auto shadow-lg hover:shadow-xl transition-all duration-200"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add New Service
-                    </Button>
+
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-blue-600" />
+                        Location
+                      </label>
+                      <Input
+                        value={postForm.location}
+                        onChange={(event) => setPostForm({ ...postForm, location: event.target.value })}
+                        placeholder="Kigali, Rwanda"
+                        className="h-11"
+                      />
+                    </div>
+
+                    <div className="space-y-2 md:col-span-2">
+                      <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <ImageIcon className="h-4 w-4 text-blue-600" />
+                        Upload image from computer
+                      </label>
+                      <Input
+                        type="file"
+                        accept="image/*"
+                        onChange={(event) => setSelectedImage(event.target.files?.[0] || null)}
+                        className="h-auto min-h-11 py-2"
+                      />
+                      <p className="text-xs text-gray-500">
+                        {selectedImage ? selectedImage.name : editingPostId && postForm.imageUrl ? "Choose a new image to replace the current one, or leave this empty to keep it." : "Choose an image file to upload."}
+                      </p>
+                    </div>
                   </div>
-                </div>
+
+                  {publishMessage ? (
+                    <div className={`rounded-lg border px-3 py-2 text-sm ${publishMessage.includes("success") ? "border-green-200 bg-green-50 text-green-700" : "border-red-200 bg-red-50 text-red-700"}`}>
+                      {publishMessage}
+                    </div>
+                  ) : null}
+
+                  <div className="flex justify-end">
+                    <Button type="submit" disabled={publishing} className="bg-blue-600 hover:bg-blue-700 text-white px-6">
+                      <Send className="mr-2 h-4 w-4" />
+                      {publishing ? (editingPostId ? "Saving..." : "Publishing...") : (editingPostId ? "Save Changes" : "Publish Post")}
+                    </Button>
+                    {editingPostId ? (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        disabled={publishing}
+                        onClick={() => {
+                          setEditingPostId(null);
+                          setSelectedImage(null);
+                          setPostForm({ title: "", description: "", date: "", location: "", imageUrl: "" });
+                          setPublishMessage("");
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    ) : null}
+                  </div>
+                </form>
+              </CardContent>
+            </Card>
+
+            <Card className="border-0 shadow-lg rounded-xl sm:rounded-2xl">
+              <CardHeader>
+                <CardTitle>Published activities and events</CardTitle>
+              </CardHeader>
+              <CardContent className="divide-y divide-gray-200 p-4 sm:p-6">
+                {posts.length === 0 ? (
+                  <p className="py-8 text-center text-sm text-gray-500">No published posts yet.</p>
+                ) : posts.map((post) => {
+                  const image = post.media?.mainImage || post.media?.images?.[0];
+                  return (
+                    <div key={post.id} className="flex flex-col gap-4 py-4 first:pt-0 sm:flex-row sm:items-center">
+                      {image ? <img src={image} alt="" className="h-20 w-full rounded-md object-cover sm:w-28" /> : null}
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-semibold text-gray-900">{post.title}</h3>
+                        <p className="mt-1 line-clamp-2 text-sm text-gray-600">{post.description}</p>
+                        <p className="mt-1 text-xs text-gray-500">{post.date}{post.location ? ` · ${post.location}` : ""}</p>
+                      </div>
+                      <div className="flex shrink-0 gap-2">
+                        <Button type="button" variant="outline" size="sm" onClick={() => handleEditPost(post)}>
+                          <Pencil className="mr-2 h-4 w-4" /> Edit
+                        </Button>
+                        <Button type="button" variant="outline" size="sm" disabled={deletingPostId === post.id} onClick={() => void handleDeletePost(post)} className="text-red-700 hover:text-red-800">
+                          <Trash2 className="mr-2 h-4 w-4" /> {deletingPostId === post.id ? "Deleting..." : "Delete"}
+                        </Button>
+                      </div>
+                    </div>
+                  );
+                })}
               </CardContent>
             </Card>
           </TabsContent>
+
         </Tabs>
       </div>
     </main>

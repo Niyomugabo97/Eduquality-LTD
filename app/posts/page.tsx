@@ -35,7 +35,7 @@ export default function ActivitiesPage() {
 
   const fetchActivities = async () => {
     try {
-      const response = await fetch("/api/activities");
+      const response = await fetch("/api/posts");
       const data = await response.json();
 
       if (data.success) {

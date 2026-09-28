@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Package, UserPlus, TrendingUp } from "lucide-react";
+import { Users, FileText, UserPlus, TrendingUp } from "lucide-react";
 
 interface AdminStatsProps {
   totalUsers: number;
@@ -43,13 +43,13 @@ export default function AdminStats({
 
       <Card className="hover:shadow-lg transition-shadow duration-300">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
-          <CardTitle className="text-xs sm:text-sm font-medium text-gray-800">Total Products</CardTitle>
-          <Package className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
+          <CardTitle className="text-xs sm:text-sm font-medium text-gray-800">Published Posts</CardTitle>
+          <FileText className="h-4 w-4 sm:h-5 sm:w-5 text-green-600" />
         </CardHeader>
         <CardContent className="p-3 sm:p-4 pt-0">
           <div className="text-xl sm:text-2xl font-bold text-gray-900">{totalProducts.toLocaleString()}</div>
           <p className="text-xs text-gray-600 mt-1">
-            Uploaded products
+            Community updates
           </p>
         </CardContent>
       </Card>
@@ -69,13 +69,13 @@ export default function AdminStats({
 
       <Card className="hover:shadow-lg transition-shadow duration-300">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-3 sm:p-4">
-          <CardTitle className="text-xs sm:text-sm font-medium text-gray-800">Activity</CardTitle>
+          <CardTitle className="text-xs sm:text-sm font-medium text-gray-800">Recent Posts</CardTitle>
           <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5 text-orange-600" />
         </CardHeader>
         <CardContent className="p-3 sm:p-4 pt-0">
           <div className="text-xl sm:text-2xl font-bold text-gray-900">{recentProducts.length}</div>
           <p className="text-xs text-gray-600 mt-1">
-            Recent uploads
+            Latest content
           </p>
         </CardContent>
       </Card>
