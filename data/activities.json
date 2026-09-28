@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": "activity-1790606846583-sus1mk",
+    "title": "nnn",
+    "description": "nn",
+    "date": "2026-09-28",
+    "location": "kigali Rwanda",
+    "media": {
+      "mainImage": "https://res.cloudinary.com/drmqxz9cc/image/upload/v1790606846/activity-posts/uxdldjlervgxazm5zn4d.jpg",
+      "images": [
+        "https://res.cloudinary.com/drmqxz9cc/image/upload/v1790606846/activity-posts/uxdldjlervgxazm5zn4d.jpg",
+        "/images/footer-bg.jpg"
+      ]
+    },
+    "createdAt": "2026-09-28T14:47:26.584Z"
+  }
+]

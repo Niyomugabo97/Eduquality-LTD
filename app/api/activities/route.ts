@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildActivityFromInput, readActivityPosts, writeActivityPosts } from "@/lib/activity-posts";
+import { buildActivityFromInput, readActivityPosts, createActivityPost } from "@/lib/activity-posts";
 
 export const dynamic = "force-dynamic";
 
@@ -32,16 +32,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const posts = await readActivityPosts();
     const newPost = buildActivityFromInput(body);
-    const updatedPosts = [newPost, ...posts];
-
-    await writeActivityPosts(updatedPosts);
+    const createdPost = await createActivityPost(newPost);
 
     return NextResponse.json({
       success: true,
       message: "Activity published successfully.",
-      data: newPost,
+      data: createdPost,
     });
   } catch (error) {
     console.error("Error publishing activity:", error);

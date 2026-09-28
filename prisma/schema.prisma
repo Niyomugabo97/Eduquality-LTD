@@ -56,6 +56,21 @@ model Beneficiary {
   @@map("beneficiaries")
 }
 
+model Activity {
+  id              String   @id @default(auto()) @map("_id") @db.ObjectId
+  title           String
+  description     String
+  fullDescription String?
+  date            String
+  location        String?
+  mainImage       String?
+  images          String[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("activities")
+}
+
 model BeneficiaryExit {
   id String @id @default(auto()) @map("_id") @db.ObjectId
 

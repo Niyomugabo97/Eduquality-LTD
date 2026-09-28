@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildActivityFromInput, readActivityPosts, writeActivityPosts } from "@/lib/activity-posts";
+import { buildActivityFromInput, readActivityPosts, createActivityPost } from "@/lib/activity-posts";
 import { getAdminSession } from "@/app/actions/auth";
 import { readActivityPostInput } from "@/lib/activity-post-input";
 
@@ -40,16 +40,13 @@ export async function POST(request: Request) {
       );
     }
 
-    const posts = await readActivityPosts();
     const newPost = buildActivityFromInput(body);
-    const updatedPosts = [newPost, ...posts];
-
-    await writeActivityPosts(updatedPosts);
+    const createdPost = await createActivityPost(newPost);
 
     return NextResponse.json({
       success: true,
       message: "Post published successfully.",
-      data: newPost,
+      data: createdPost,
     });
   } catch (error) {
     console.error("Error publishing post:", error);

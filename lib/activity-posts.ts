@@ -1,5 +1,4 @@
-import { mkdir, readFile, writeFile } from "fs/promises";
-import path from "path";
+import prisma from "@/lib/prisma";
 
 export interface ActivityPost {
   id: string;
@@ -15,34 +14,114 @@ export interface ActivityPost {
   createdAt?: string;
 }
 
-const DATA_FILE = path.join(process.cwd(), "data", "activities.json");
-
 export async function readActivityPosts(): Promise<ActivityPost[]> {
   try {
-    await mkdir(path.dirname(DATA_FILE), { recursive: true });
-    const fileContents = await readFile(DATA_FILE, "utf-8");
-    const parsed = JSON.parse(fileContents);
+    const activities = await prisma.activity.findMany({
+      orderBy: { createdAt: 'desc' }
+    });
 
-    if (Array.isArray(parsed)) {
-      return parsed as ActivityPost[];
-    }
-
-    return [];
-  } catch {
-    try {
-      await mkdir(path.dirname(DATA_FILE), { recursive: true });
-      await writeFile(DATA_FILE, "[]", "utf-8");
-    } catch {
-      // Keep the public posts page empty when storage is unavailable.
-    }
-
+    return activities.map(activity => ({
+      id: activity.id,
+      title: activity.title,
+      description: activity.description,
+      fullDescription: activity.fullDescription || undefined,
+      date: activity.date,
+      location: activity.location || undefined,
+      media: {
+        mainImage: activity.mainImage || undefined,
+        images: activity.images || []
+      },
+      createdAt: activity.createdAt.toISOString()
+    }));
+  } catch (error) {
+    console.error("Error reading activities from database:", error);
     return [];
   }
 }
 
 export async function writeActivityPosts(posts: ActivityPost[]) {
-  await mkdir(path.dirname(DATA_FILE), { recursive: true });
-  await writeFile(DATA_FILE, JSON.stringify(posts, null, 2), "utf-8");
+  // This function is deprecated - use individual Prisma operations instead
+  // Kept for backward compatibility but should be replaced
+  console.warn("writeActivityPosts is deprecated - use individual Prisma operations");
+}
+
+export async function createActivityPost(post: ActivityPost): Promise<ActivityPost> {
+  try {
+    const activity = await prisma.activity.create({
+      data: {
+        title: post.title,
+        description: post.description,
+        fullDescription: post.fullDescription || null,
+        date: post.date,
+        location: post.location || null,
+        mainImage: post.media?.mainImage || null,
+        images: post.media?.images || []
+      }
+    });
+
+    return {
+      id: activity.id,
+      title: activity.title,
+      description: activity.description,
+      fullDescription: activity.fullDescription || undefined,
+      date: activity.date,
+      location: activity.location || undefined,
+      media: {
+        mainImage: activity.mainImage || undefined,
+        images: activity.images || []
+      },
+      createdAt: activity.createdAt.toISOString()
+    };
+  } catch (error) {
+    console.error("Error creating activity in database:", error);
+    throw error;
+  }
+}
+
+export async function updateActivityPost(id: string, post: Partial<ActivityPost>): Promise<ActivityPost | null> {
+  try {
+    const activity = await prisma.activity.update({
+      where: { id },
+      data: {
+        title: post.title,
+        description: post.description,
+        fullDescription: post.fullDescription || null,
+        date: post.date,
+        location: post.location || null,
+        mainImage: post.media?.mainImage || null,
+        images: post.media?.images || []
+      }
+    });
+
+    return {
+      id: activity.id,
+      title: activity.title,
+      description: activity.description,
+      fullDescription: activity.fullDescription || undefined,
+      date: activity.date,
+      location: activity.location || undefined,
+      media: {
+        mainImage: activity.mainImage || undefined,
+        images: activity.images || []
+      },
+      createdAt: activity.createdAt.toISOString()
+    };
+  } catch (error) {
+    console.error("Error updating activity in database:", error);
+    return null;
+  }
+}
+
+export async function deleteActivityPost(id: string): Promise<boolean> {
+  try {
+    await prisma.activity.delete({
+      where: { id }
+    });
+    return true;
+  } catch (error) {
+    console.error("Error deleting activity from database:", error);
+    return false;
+  }
 }
 
 export function buildActivityFromInput(input: any): ActivityPost {
